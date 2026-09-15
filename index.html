@@ -80,7 +80,31 @@
   nav a:hover{color:var(--terracotta);}
   .header-contact{display:flex;gap:18px;align-items:center;font-size:.9rem;}
   .header-contact a{display:flex;align-items:center;gap:6px;color:var(--forest);font-weight:500;}
-  .menu-toggle{display:none;background:none;border:none;font-size:1.6rem;color:var(--forest);cursor:pointer;}
+  .menu-toggle{
+    display:none;background:none;border:none;color:var(--forest);cursor:pointer;
+    width:48px;height:48px;align-items:center;justify-content:center;flex-direction:column;gap:5px;
+  }
+  .menu-toggle span{display:block;width:24px;height:2px;border-radius:2px;background:currentColor;}
+
+  @media(max-width:892px){
+    .nav-wrap{padding:14px 16px;gap:8px;}
+    .logo{flex:0 0 auto;}
+    .menu-toggle{display:flex;flex:0 0 48px;touch-action:manipulation;}
+    .nav-wrap > .btn{flex:0 0 auto;white-space:nowrap;}
+    header nav{
+      display:none;position:absolute;top:100%;right:0;left:0;width:100%;
+      background:var(--cream);border-bottom:1px solid rgba(16,26,61,.12);box-shadow:var(--shadow);
+    }
+    header nav.is-open{display:block;}
+    header nav ul{display:block;}
+    header nav a{
+      display:flex;align-items:center;min-height:48px;padding:12px 24px;
+      border-top:1px solid rgba(16,26,61,.08);touch-action:manipulation;
+    }
+    .menu-toggle:focus-visible, header nav a:focus-visible{
+      outline:3px solid var(--terracotta);outline-offset:2px;
+    }
+  }
 
   /* HERO */
   .hero{
@@ -133,6 +157,7 @@
   .story img{border-radius:24px;box-shadow:var(--shadow);}
   .story h2{font-size:2rem;margin-bottom:20px;}
   .story p{font-size:1.02rem;color:#3d4a63;}
+  #about img{max-width:360px;width:100%;display:block;margin:0 auto;border-radius:12px;}
 
   /* WHY US */
   .why-bg{background:var(--forest);color:#fff;}
@@ -245,6 +270,8 @@
   .lifebook-images img{border-radius:18px;box-shadow:var(--shadow);}
   .lifebook-text p{color:#3d4a63;margin-bottom:16px;line-height:1.75;}
   .lifebook-price{display:inline-block;background:var(--terracotta);color:#fff;padding:6px 16px;border-radius:20px;font-weight:700;font-size:.9rem;margin-bottom:18px;}
+  #lifebook h2 img{max-width:420px;width:100%;display:block;margin:0 auto;border-radius:12px;}
+  @media(max-width:640px){#lifebook h2 img{max-width:80%;}}
 
     position:fixed;bottom:24px;left:24px;background:#25D366;color:#fff;
     width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;
@@ -257,7 +284,7 @@
 <header>
   <div class="nav-wrap">
     <a href="#top" class="logo"><img src="assets/logo.jpg" alt="מתחברים" style="border-radius:12px;"></a>
-    <nav>
+    <nav id="primary-navigation">
       <ul>
         <li><a href="#top">ראשי</a></li>
         <li><a href="#about">קצת עלינו</a></li>
@@ -268,6 +295,11 @@
         <li><a href="#contact">צרו קשר</a></li>
       </ul>
     </nav>
+    <button class="menu-toggle" type="button" aria-label="פתיחת תפריט ניווט" aria-expanded="false" aria-controls="primary-navigation">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </button>
     <a href="#contact" class="btn" style="padding:12px 26px;font-size:.9rem;">השאירו פרטים</a>
   </div>
 </header>
@@ -340,7 +372,7 @@
   <div class="container story">
     <div>
       
-      <img src="https://mitchabrim.co/wp-content/uploads/2025/11/מתחברים-1-1024x1024.png" alt="מתחברים">
+      <img src="assets/logo-mitchabrim.jpg" alt="מתחברים">
     </div>
     <div>
       <span class="eyebrow">מאין הגיע הרעיון</span>
@@ -403,7 +435,7 @@
   <div class="container">
     <div class="section-title">
       <span class="eyebrow">מוצר חדש</span>
-      <h2>Life Book</h2>
+      <h2><img src="assets/logo-lifebook.jpg" alt="Life Book"></h2>
     </div>
     <div class="lifebook-wrap">
       <div class="lifebook-images">
@@ -600,6 +632,49 @@
 </footer>
 
 <a href="https://wa.me/9720522-862281" class="whatsapp-float" title="WhatsApp us">💬</a>
+
+<script>
+  (function(){
+    var menuButton = document.querySelector('.menu-toggle');
+    var navigation = document.getElementById('primary-navigation');
+    var foldedQuery = window.matchMedia('(max-width: 892px)');
+
+    function closeMenu(returnFocus){
+      navigation.classList.remove('is-open');
+      menuButton.setAttribute('aria-expanded', 'false');
+      menuButton.setAttribute('aria-label', 'פתיחת תפריט ניווט');
+      if (returnFocus) menuButton.focus();
+    }
+
+    menuButton.addEventListener('click', function(){
+      var willOpen = menuButton.getAttribute('aria-expanded') !== 'true';
+      navigation.classList.toggle('is-open', willOpen);
+      menuButton.setAttribute('aria-expanded', String(willOpen));
+      menuButton.setAttribute('aria-label', willOpen ? 'סגירת תפריט ניווט' : 'פתיחת תפריט ניווט');
+    });
+
+    navigation.addEventListener('click', function(event){
+      if (event.target.closest('a')) closeMenu(false);
+    });
+
+    document.addEventListener('click', function(event){
+      if (menuButton.getAttribute('aria-expanded') === 'true' &&
+          !navigation.contains(event.target) && !menuButton.contains(event.target)) {
+        closeMenu(false);
+      }
+    });
+
+    document.addEventListener('keydown', function(event){
+      if (event.key === 'Escape' && menuButton.getAttribute('aria-expanded') === 'true') {
+        closeMenu(true);
+      }
+    });
+
+    foldedQuery.addEventListener('change', function(){
+      closeMenu(false);
+    });
+  })();
+</script>
 
 </body>
 </html>
