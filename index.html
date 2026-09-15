@@ -500,13 +500,13 @@
         <input type="hidden" name="_template" value="table">
         <input type="hidden" name="_captcha" value="false">
         <input type="hidden" name="_honey" style="display:none">
-        <input type="text" name="name" placeholder="שם מלא" required>
-        <input type="tel" name="phone" placeholder="טלפון" required>
-        <input type="email" name="email" placeholder="אימייל">
-        <textarea rows="4" name="message" placeholder="הודעה"></textarea>
+        <input type="text" name="name" placeholder="שם מלא" aria-label="שם מלא" required>
+        <input type="tel" name="phone" placeholder="טלפון" aria-label="טלפון" required>
+        <input type="email" name="email" placeholder="אימייל" aria-label="אימייל">
+        <textarea rows="4" name="message" placeholder="הודעה" aria-label="הודעה"></textarea>
         <label class="checkbox-row"><input type="checkbox" required> אני מאשר שיתקשרו אליי</label>
         <button type="submit" class="btn" id="leadFormSubmit">שלח טופס</button>
-        <p id="leadFormStatus" style="display:none;font-weight:600;"></p>
+        <p id="leadFormStatus" role="status" aria-live="polite" style="display:none;font-weight:600;"></p>
       </form>
     </div>
     <script>
@@ -589,6 +589,10 @@
       navigation.classList.toggle('is-open', willOpen);
       menuButton.setAttribute('aria-expanded', String(willOpen));
       menuButton.setAttribute('aria-label', willOpen ? 'סגירת תפריט ניווט' : 'פתיחת תפריט ניווט');
+      if (willOpen) {
+        var firstLink = navigation.querySelector('a');
+        if (firstLink) firstLink.focus();
+      }
     });
 
     navigation.addEventListener('click', function(event){
