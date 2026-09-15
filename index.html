@@ -157,7 +157,7 @@
   .story img{border-radius:24px;box-shadow:var(--shadow);}
   .story h2{font-size:2rem;margin-bottom:20px;}
   .story p{font-size:1.02rem;color:#3d4a63;}
-  #about img{max-width:360px;width:100%;display:block;margin:0 auto;border-radius:12px;}
+  #about .story img{max-width:360px;width:100%;display:block;margin:0 auto;border-radius:12px;}
 
   /* WHY US */
   .why-bg{background:var(--forest);color:#fff;}
@@ -229,6 +229,7 @@
   form.contact-form input, form.contact-form textarea{
     padding:14px 18px;border-radius:12px;border:none;font-family:inherit;font-size:1rem;
   }
+  form.contact-form input[type="tel"]{text-align:right;}
   .checkbox-row{display:flex;align-items:center;gap:8px;justify-content:center;font-size:.9rem;}
 
   /* FOOTER */
@@ -264,7 +265,7 @@
   .lecture-price{font-weight:700;color:var(--terracotta);}
 
   /* LIFEBOOK */
-  .lifebook-wrap{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center;}
+  .lifebook-wrap{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:start;}
   @media(max-width:800px){.lifebook-wrap{grid-template-columns:1fr;}}
   .lifebook-images{display:grid;gap:20px;}
   .lifebook-images img{border-radius:18px;box-shadow:var(--shadow);}
@@ -273,6 +274,7 @@
   #lifebook h2 img{max-width:420px;width:100%;display:block;margin:0 auto;border-radius:12px;}
   @media(max-width:640px){#lifebook h2 img{max-width:80%;}}
 
+  .whatsapp-float{
     position:fixed;bottom:24px;left:24px;background:#25D366;color:#fff;
     width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;
     box-shadow:0 8px 24px rgba(0,0,0,.25);font-size:1.6rem;z-index:200;
@@ -288,10 +290,9 @@
       <ul>
         <li><a href="#top">ראשי</a></li>
         <li><a href="#about">קצת עלינו</a></li>
-        <li><a href="#workshops">הסדנאות שלנו</a></li>
-        <li><a href="#facilitators">מנחה הסדנאות</a></li>
-        <li><a href="#lectures">ההרצאות שלנו</a></li>
         <li><a href="#lifebook">Life Book</a></li>
+        <li><a href="#lectures">ההרצאות שלנו</a></li>
+        <li><a href="#workshops">הסדנאות שלנו</a></li>
         <li><a href="#contact">צרו קשר</a></li>
       </ul>
     </nav>
@@ -317,57 +318,6 @@
   </div>
 </section>
 
-<section id="facilitators" style="background:var(--white);">
-  <div class="container">
-    <div class="section-title">
-      <span class="eyebrow">הצוות שלנו</span>
-      <h2>המנחים שלנו</h2>
-    </div>
-    <div class="facilitator-grid">
-      <div class="facilitator-card">
-        <img class="facilitator-photo" src="assets/facilitator-elad.webp" alt="אלעד פולוסצקי">
-        <h3>אלעד פולוסצקי</h3>
-        <p>אני הבעלים של "מתחברים" — עסק שממוקד בהענקת חוויות משמעותיות ומעשירות לבני הגיל השלישי. עם שנים רבות של ניסיון בעולם החברתי והחינוכי, אני מחויב לחבר בין אנשים דרך סדנאות יצירה, זיכרונות, תנועה ולמידה.</p>
-        <p>בעבר עבדתי בעיריית תל אביב והדרכתי סדנאות בנושאי אקולוגיה וקהילה לגיל השלישי, והעברתי מפגשים בפני הגיל השלישי שהפכו לחלק בלתי נפרד מהקהילה.</p>
-        <p>בעברי עסקתי בעריכת דין ויש לי ניסיון בתחום ההיי-טק. בששת השנים האחרונות ניהלתי חברה שמפיקה סדנאות לכל הגילאים, ומטרתי היא להמשיך לפעול ליצירת חוויות שמקרבות, מחזקות ומעשירות את חיי כל אחד ואחת, בכל שלב בחיים.</p>
-      </div>
-      <div class="facilitator-card">
-        <img class="facilitator-photo" src="assets/facilitator-anna.webp" alt="אנה יוסף">
-        <h3>אנה יוסף</h3>
-        <p>בת 29, עובדת סוציאלית ומורת דרך. אוהבת טבע, נופים ואנשים.</p>
-        <p>מרגישה חיבור מיוחד עם בני הגיל השלישי, לאור הקשרים הייחודיים שהיו ועודם עם סבי וסבותיי. במסגרת הכשרתי ערכתי מפגשים טיפוליים עם בנות הגיל השלישי, מפגשים שהיו משמעותיים ולימדו אותי רבות על מאפייני האוכלוסייה הזו ועל החיים 😊</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="lectures">
-  <div class="container">
-    <div class="section-title">
-      <span class="eyebrow">ידע ותובנות</span>
-      <h2>ההרצאות שלנו</h2>
-    </div>
-    <div class="cards">
-      <div class="lecture-card">
-        <h3>שמחה, משמעות וחיוניות בחיי היומיום</h3>
-        <p>הרצאה חווייתית על איך שומרים על אנרגיה חיובית, חיבור פנימי ותחושת ערך בכל שלב בחיים – כולל כלים מעשיים לתנועה, נשימה, תזונה, קשרים חברתיים ואימון קוגניטיבי.</p>
-      </div>
-      <div class="lecture-card">
-        <h3>ארבעת היסודות וארבע הממלכות</h3>
-        <p>מסע דרך אש, מים, אוויר ועפר ודרך דומם, צומח, חי ומדבר – מיפוי הגוף והנפש דרך היסודות, עם תרגילים מעשיים לאיזון כל יסוד וכלים להבנת מקור מחלה וריפוי.</p>
-      </div>
-      <div class="lecture-card">
-        <h3>מערכת שלד-שריר ומשמעותה הנפשית</h3>
-        <p>איך הרצון, הכיוונים והמפרקים בגוף מספרים את הסיפור הנפשי שלנו. הרצאה שמראה כיצד כל תופעה במערכת שלד-שריר משקפת ומראה כיצד הרצון שלנו מתממש בחיים.</p>
-      </div>
-      <div class="lecture-card">
-        <h3>משל המרכבה ו-12 שלבי החיים</h3>
-        <p>הגוף, הלב והסיפור שעיצב אותנו – מסע הנפש דרך 12 פרקי החיים. הרצאה חווייתית ופרקטית שמראה כיצד חוויות עבר, זיכרונות ודפוסים רגשיים ממשיכים להשפיע על הבחירות וההתנהגויות שלנו כיום.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
 <section id="about">
   <div class="container story">
     <div>
@@ -378,6 +328,16 @@
       <span class="eyebrow">מאין הגיע הרעיון</span>
       <h2>הסיפור שלנו</h2>
       <p>במהלך השנים שבהן ראיתי את סבתא שלי משתעממת מול הטלוויזיה כל היום, זה כאב לי בלב והבנתי עד כמה חשוב להוסיף משמעות ועניין לחיי היום-יום שלה. זה הוציא אותי לדרך במטרה להפיג את תחושת הבדידות, להוסיף חיות ותשוקה ליום-יום, ולעודד ולחזק את התחושת הערך והעניין שלה. המיזם שלנו נולד מתוך הרצון לסייע גם לאנשים אחרים לצאת מתחושות של שעמום ובידוד, וליצור מרחב חווייתי, יצירתי ומעשיר שמחבר בין לבבות, ומביא לדרך חיים מלאה יותר, עם חיות, משמעות והזדמנויות חדשות.</p>
+    </div>
+  </div>
+  <div class="container" style="margin-top:50px;">
+    <div class="facilitator-card" style="max-width:420px;margin:0 auto;">
+      <img class="facilitator-photo" src="assets/facilitator-elad.webp" alt="אלעד פולוסצקי">
+      <h3>אלעד פולוסצקי</h3>
+      <p class="eyebrow" style="text-align:center;">בעלים של "מתחברים"</p>
+      <p>אני הבעלים של "מתחברים", עסק שממוקד בהענקת חוויות משמעותיות ומעשירות לבני הגיל השלישי. עם שנים רבות של ניסיון בעולם החברתי והחינוכי, אני מחויב לחבר בין אנשים דרך סדנאות יצירה, זיכרונות, תנועה ולמידה.</p>
+      <p>בעבר עבדתי בעיריית תל אביב והדרכתי סדנאות בנושאי אקולוגיה וקהילה לגיל השלישי, והעברתי מפגשים בפני הגיל השלישי שהפכו לחלק בלתי נפרד מהקהילה.</p>
+      <p>בעברי עסקתי בעריכת דין ויש לי ניסיון בתחום ההיי-טק. בששת השנים האחרונות ניהלתי חברה שמפיקה סדנאות לכל הגילאים, ומטרתי היא להמשיך לפעול ליצירת חוויות שמקרבות, מחזקות ומעשירות את חיי כל אחד ואחת, בכל שלב בחיים.</p>
     </div>
   </div>
 </section>
@@ -412,25 +372,6 @@
   </div>
 </section>
 
-<section>
-  <div class="container">
-    <div class="section-title">
-      <span class="eyebrow">מה אומרים עלינו</span>
-      <h2>המלצות</h2>
-    </div>
-    <div class="testimonials">
-      <div class="testimonial">
-        <p>"אלעד הגיע אליי ויחד בנינו אלבום משפחתי מלא בזיכרונות, חוויות ורגעים מיוחדים. בנוסף, עברנו סדנת כיף שבה שיחקנו בתשחצים ועזרנו אחד לשני, והחוויות היו מושקעות, מרגיעות וממש נעימות. זה היה זמן איכות שכלל גם צחוק, קרבה ותחושת סיפוק, ואני ממליצה בחום לכולם לנסות את זה ולחוש את הקסם של חיבור ומשפחה."</p>
-        <div class="name">מרים</div>
-      </div>
-      <div class="testimonial">
-        <p>"הכרתי את עולם הטכנולוגיה וה-AI בסדנה שהועברה לי, והחוויה הייתה מעשירה ומרתקת. למדתי כיצד כלים פשוטים יכולים לשפר את חיי היומיום שלי, ותחושת הביטחון שלי בעולם הטכנולוגי גדלה משמעותית. בנוסף, הסדנה היצירתית למוח כללה פעילויות שמחזקות את היכולות הקוגניטיביות, שומרים על הפוקוס והחדות החשיבתית, ומגבירות את תחושת ההישג והביטחון העצמי בכל רגע שמתעסקים בו בפעילויות מעוררות ומגבשות."</p>
-        <div class="name">עדנה ושושנה</div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <section id="lifebook" style="background:var(--white);">
   <div class="container">
     <div class="section-title">
@@ -457,6 +398,37 @@
   </div>
 </section>
 
+<section id="lectures">
+  <div class="container">
+    <div class="section-title">
+      <span class="eyebrow">ידע ותובנות</span>
+      <h2>ההרצאות שלנו</h2>
+    </div>
+    <div class="cards">
+      <div class="lecture-card">
+        <h3>שמחה, משמעות וחיוניות בחיי היומיום</h3>
+        <p>הרצאה חווייתית על איך שומרים על אנרגיה חיובית, חיבור פנימי ותחושת ערך בכל שלב בחיים – כולל כלים מעשיים לתנועה, נשימה, תזונה, קשרים חברתיים ואימון קוגניטיבי.</p>
+      </div>
+      <div class="lecture-card">
+        <h3>ארבעת היסודות וארבע הממלכות</h3>
+        <p>מסע דרך אש, מים, אוויר ועפר ודרך דומם, צומח, חי ומדבר – מיפוי הגוף והנפש דרך היסודות, עם תרגילים מעשיים לאיזון כל יסוד וכלים להבנת מקור מחלה וריפוי.</p>
+      </div>
+      <div class="lecture-card">
+        <h3>מערכת שלד-שריר ומשמעותה הנפשית</h3>
+        <p>איך הרצון, הכיוונים והמפרקים בגוף מספרים את הסיפור הנפשי שלנו. הרצאה שמראה כיצד כל תופעה במערכת שלד-שריר משקפת ומראה כיצד הרצון שלנו מתממש בחיים.</p>
+      </div>
+      <div class="lecture-card">
+        <h3>משל המרכבה ו-12 שלבי החיים</h3>
+        <p>הגוף, הלב והסיפור שעיצב אותנו – מסע הנפש דרך 12 פרקי החיים. הרצאה חווייתית ופרקטית שמראה כיצד חוויות עבר, זיכרונות ודפוסים רגשיים ממשיכים להשפיע על הבחירות וההתנהגויות שלנו כיום.</p>
+      </div>
+      <div class="lecture-card">
+        <h3>מזון לנפש: חוכמת הרמב"ם פוגשת את המדע המודרני</h3>
+        <p>הרצאה מרתקת המגשרת בין חכמת הרפואה של הרמב"ם, שראתה בגוף ובנפש מערכת אחת בלתי נפרדת, לבין תובנות המחקר המדעי העכשווי. ההרצאה עוסקת בקשר שבין תזונה, בריאות נפשית ואיזון פנימי, נושא שהרמב"ם התייחס אליו כבר לפני כ-800 שנה בכתביו הרפואיים, ושהמדע המודרני חוזר ומאשש היום דרך מחקרים על ציר המעי-מוח, תזונה נוגדת דלקת והשפעת האכילה על מצב הרוח.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="workshops">
   <div class="container">
     <div class="section-title">
@@ -468,86 +440,76 @@
         <img class="card-img" src="assets/workshop-painting.webp" alt="סדנא קוגניטיבית למוח">
         <div class="card-body">
           <h3>סדנא קוגניטיבית למוח</h3>
-          <a class="more" href="#wk-cognitive">קרא עוד ←</a>
         </div>
       </div>
       <div class="card">
         <img class="card-img" src="assets/workshop-boardgame-tech.webp" alt="סדנת משחקים לכיף">
         <div class="card-body">
           <h3>סדנת משחקים לכיף</h3>
-          <a class="more" href="#wk-games">קרא עוד ←</a>
         </div>
       </div>
       <div class="card">
         <img class="card-img" src="assets/workshop-smartphone.webp" alt="סדנת היכרות טכנולוגית">
         <div class="card-body">
           <h3>סדנת היכרות טכנולוגית</h3>
-          <a class="more" href="#wk-tech">קרא עוד ←</a>
         </div>
       </div>
       <div class="card">
         <img class="card-img" src="assets/workshop-couple.webp" alt="סדנת בניית אלבום דיגיטלי">
         <div class="card-body">
           <h3>סדנת בניית אלבום דיגיטלי</h3>
-          <a class="more" href="#wk-album">קרא עוד ←</a>
         </div>
       </div>
       <div class="card">
         <img class="card-img" src="assets/workshop-boardgame.webp" alt="סדנת כתיבה - ספרו את הסיפור שלכם">
         <div class="card-body">
           <h3>סדנת כתיבה - ספרו את הסיפור שלכם</h3>
-          <a class="more" href="#wk-writing">קרא עוד ←</a>
+        </div>
+      </div>
+      <div class="card">
+        <img class="card-img" src="assets/workshop-qigong.webp" alt="סדנת צ'י קונג">
+        <div class="card-body">
+          <h3>סדנת צ'י קונג</h3>
+        </div>
+      </div>
+      <div class="card">
+        <img class="card-img" src="assets/workshop-breathing.webp" alt="סדנת נשימה">
+        <div class="card-body">
+          <h3>סדנת נשימה</h3>
+        </div>
+      </div>
+      <div class="card">
+        <img class="card-img" src="assets/workshop-movement.webp" alt="סדנאות תנועה">
+        <div class="card-body">
+          <h3>סדנאות תנועה</h3>
+        </div>
+      </div>
+      <div class="card">
+        <img class="card-img" src="assets/workshop-music.webp" alt="סדנאות מוזיקה">
+        <div class="card-body">
+          <h3>סדנאות מוזיקה</h3>
         </div>
       </div>
     </div>
+    <p style="text-align:center;margin-top:30px;">ועוד ועוד...</p>
   </div>
 </section>
 
-<section id="wk-details" style="padding-top:0;">
+<section>
   <div class="container">
-    <div class="workshop-detail" id="wk-cognitive">
-      <div class="section-title" style="margin-bottom:20px;"><h2 style="font-size:1.6rem;">סדנת קוגניטיבית למוח</h2></div>
-      <p>סדנא קוגנטיבית למוח מסייעת לפיתוח היכולות הקוגניטיביות של המוח לגיל השלישי בצורה משמעותית על ידי חיזוק היכולות הקוגניטיביות, שמירה על פוקוס וחדות מחשבתית, והגברת תחושת ההישג והביטחון העצמי, בכל רגע בו הם משתתפים בפעילויות מעוררות ומרתקות.</p>
-      <p>סדנת הקוגנטיביות למוח מציעה חוויות מעשירות שמפעילות את החשיבה והדמיון בקרב הגיל השלישי. באמצעות תרגילים מרתקים ומאתגרים, אנו מחזקים את היכולות הקוגניטיביות ושומרים על חדות הריכוז, הסדנה מעודדת תחושת הישג וגאווה, ומסייעת בהגברת הביטחון העצמי של המשתתפים. תהליך היצירה בסדנה מביא להנאה מחוויות מפתיעות שמספקות כיף ואתגר. כל מפגש מציע תוכן חדש שמפעיל את המוח וממריץ את הדמיון. הסדנה מציעה שיתוף ומעורבות חברתית שמחזקת את תחושת השייכות. מטרתנו היא להעשיר את חיי המשתתפים ולהפוך כל רגע ליחיד ומיוחד.</p>
-      <p><strong>הסדנא בנויה מ-3 מפגשים של שעתיים כל מפגש.</strong> מתאימה לגילאי 60 עד 95, תוך התאמה למצב הקוגניטיבי וליכולות האישיות של כל משתתף.</p>
-      <p><strong>מחיר הסדנה: 1,199 ש"ח</strong></p>
-      <a href="#contact" class="btn">השאירו פרטים</a>
+    <div class="section-title">
+      <span class="eyebrow">מה אומרים עלינו</span>
+      <h2>המלצות</h2>
     </div>
-
-    <div class="workshop-detail" id="wk-games">
-      <div class="section-title" style="margin-bottom:20px;"><h2 style="font-size:1.6rem;">סדנת משחקים לכיף</h2></div>
-      <p>סדנת משחקים לכיף מגבירה את ההנאה, את הרווחה הנפשית והחברתית, ומפתחת מיומנויות קוגניטיביות תוך יצירת חוויות משותפות שמחזקות את הקשר והתחושה של שייכות.</p>
-      <p>בסדנת המשחקים לכיף, כל מפגש הוא הזדמנות לחוויה משותפת מלאה חיוך וצחוק. אנחנו מזמינים אתכם להנות ממשחקים שיקראו לכם לשחרר, לפרוץ שגרה ולחוות את הכיף שבפעילות. המשחקים שלנו מעודדים יצירת חוויות משותפות, חשיבה קלילה וכיף אמיתי – עם חוויות שיישארו בלב לאורך זמן. בין אם זה שבץ נא, משחקי קלפים, או אתגרים קלילים – המטרה שלנו היא לייצר זמן איכות מלא בהנאה, חיבור ושמחה. החוויות שלנו מתנות רגעים בלתי נשכחים, שמחזקים את הקשר הבין-אישי ומביאים שמחה לכל אחד.</p>
-      <p><strong>הסדנא בנויה מ-3 מפגשים של שעתיים כל מפגש.</strong> מתאימה לגילאי 60 עד 95, תוך התאמה למצב הקוגניטיבי וליכולות האישיות של כל משתתף.</p>
-      <p><strong>מחיר הסדנה: 1,199 ש"ח</strong></p>
-      <a href="#contact" class="btn">השאירו פרטים</a>
-    </div>
-
-    <div class="workshop-detail" id="wk-tech">
-      <div class="section-title" style="margin-bottom:20px;"><h2 style="font-size:1.6rem;">סדנת היכרות טכנולוגית</h2></div>
-      <p>סדנת היכרות טכנולוגית למבוגרים משפרת את החיבור לעולם הדיגיטלי, מחזקת את העצמאות והביטחון העצמי, ומעשירה את האפשרויות החברתיות והמידעיות, ובכך מעצימה את איכות חייהם. <strong>מטרה:</strong> להקל את חיי היומיום בעידן הדיגיטלי.</p>
-      <p>בסדנת היכרות טכנולוגית למבוגרים אנו מציעים חיבור ייחודי לעולם הדיגיטלי באופן פשוט וידידותי. תוך למידה ותרגול מעשי, המשתתפים יכולים לחזק את הביטחון העצמי ואת תחושת העצמאות שלהם. השימוש בטכנולוגיות מתקדמות מאפשר להתפעם מהטכנולוגיה העכשווית כדוגמת AI וכל האפליקציות מסביב לזה. המשתתפים לומדים להשתמש באפליקציות תקשורת לחיזוק הקשרים עם משפחה וחברים.</p>
-      <p><strong>הסדנא בנויה מ-3 מפגשים של שעתיים כל מפגש.</strong> מתאימה לגילאי 60 עד 95, תוך התאמה למצב הקוגניטיבי וליכולות האישיות של כל משתתף.</p>
-      <p><strong>מחיר הסדנה: 1,199 ש"ח</strong></p>
-      <a href="#contact" class="btn">השאירו פרטים</a>
-    </div>
-
-    <div class="workshop-detail" id="wk-album">
-      <div class="section-title" style="margin-bottom:20px;"><h2 style="font-size:1.6rem;">סדנת בניית אלבום דיגיטלי</h2></div>
-      <p>מחפשים לשמר את הזיכרונות היקרים בצורה מרגשת ומודרנית? בניית אלבום דיגיטלי היא הפתרון לשמירת רגעים בלתי נשכחים, לחיזוק ההיסטוריה המשפחתית ולהבעה יצירתית. הצטרפו אלינו ותהנו מחווית יצירה קלילה ומרגשת, שתשאיר חותם דיגיטלי חי וקיים לדורות הבאים!</p>
-      <p>בסדנת בניית אלבום דיגיטלי משותף אנו מזמינים אתכם לחוויית יצירה אינטימית ומשמעותית אחד על אחד. במהלך המפגש, תגלו את כוחה של היצירה המשותפת, תוך שאתם נזכרים בעבר, מספרים סיפורים ומחיים רגעים יקרים. תוך ליווי אישי, ניצור יחדיו אלבום מרגש שיישאר כמזכרת נצחית, המשמרת חוויות וזכרונות ייחודיים על פי רצונכם.</p>
-      <p><strong>הסדנא בנויה מ-3 מפגשים של שעתיים כל מפגש.</strong> מתאימה לגילאי 60 עד 95, תוך התאמה למצב הקוגניטיבי וליכולות האישיות של כל משתתף.</p>
-      <p><strong>מחיר הסדנה: 1,399 ש"ח</strong> (המחיר כולל יצירת אלבום דיגיטלי אישי שישאר אצל המשתתף, וישלח אליכם הביתה לאחר סיום הסדנה).</p>
-      <a href="#contact" class="btn">השאירו פרטים</a>
-    </div>
-
-    <div class="workshop-detail" id="wk-writing">
-      <div class="section-title" style="margin-bottom:20px;"><h2 style="font-size:1.6rem;">סדנת כתיבה - ספרו את הסיפור שלכם</h2></div>
-      <p>חוויה של כתיבה עם סבתא/סבא היא הזדמנות ייחודית לשהות יחד, לשתף זיכרונות, לספר סיפורי חיים ולעזור לדור הצעיר להכיר את ההיסטוריה המשפחתית. זה משלב יצירתיות, חיבור רגשי והזדמנות לתעד רגעים יקרים, שממשיכים לחיות ולהשפיע לדורות הבאים.</p>
-      <p>חוויית הכתיבה עם סבתא/סבא/אמא/אבא היא זמן יקר של חיבור ומשמעות. זה זמן שבו אפשר לשתף זיכרונות, לספר סיפורי חיים ולהכיר את ההיסטוריה המשפחתית מקרוב. התהליך מעודד יצירתיות, מחזק את הקשר הרגשי ומשאיר תיעוד יקר שיימשך לדורות הבאים.</p>
-      <p><strong>הסדנא בנויה מ-3 מפגשים של שעתיים כל מפגש.</strong> מתאימה לגילאי 60 עד 95, תוך התאמה למצב הקוגניטיבי וליכולות האישיות של כל משתתף.</p>
-      <p><strong>מחיר הסדנה: 1,399 ש"ח</strong> (כולל יומן כתיבה אישי שישאר אצל המשתתף כמזכרת מהסדנה).</p>
-      <a href="#contact" class="btn">השאירו פרטים</a>
+    <div class="testimonials">
+      <div class="testimonial">
+        <p>"אלעד הגיע אליי ויחד בנינו אלבום משפחתי מלא בזיכרונות, חוויות ורגעים מיוחדים. בנוסף, עברנו סדנת כיף שבה שיחקנו בתשחצים ועזרנו אחד לשני, והחוויות היו מושקעות, מרגיעות וממש נעימות. זה היה זמן איכות שכלל גם צחוק, קרבה ותחושת סיפוק, ואני ממליצה בחום לכולם לנסות את זה ולחוש את הקסם של חיבור ומשפחה."</p>
+        <div class="name">מרים</div>
+      </div>
+      <div class="testimonial">
+        <p>"הכרתי את עולם הטכנולוגיה וה-AI בסדנה שהועברה לי, והחוויה הייתה מעשירה ומרתקת. למדתי כיצד כלים פשוטים יכולים לשפר את חיי היומיום שלי, ותחושת הביטחון שלי בעולם הטכנולוגי גדלה משמעותית. בנוסף, הסדנה היצירתית למוח כללה פעילויות שמחזקות את היכולות הקוגניטיביות, שומרים על הפוקוס והחדות החשיבתית, ומגבירות את תחושת ההישג והביטחון העצמי בכל רגע שמתעסקים בו בפעילויות מעוררות ומגבשות."</p>
+        <div class="name">עדנה ושושנה</div>
+      </div>
     </div>
   </div>
 </section>
@@ -562,13 +524,13 @@
         <input type="hidden" name="_template" value="table">
         <input type="hidden" name="_captcha" value="false">
         <input type="hidden" name="_honey" style="display:none">
-        <input type="text" name="name" placeholder="שם מלא" required>
-        <input type="tel" name="phone" placeholder="טלפון" required>
-        <input type="email" name="email" placeholder="אימייל">
-        <textarea rows="4" name="message" placeholder="הודעה"></textarea>
+        <input type="text" name="name" placeholder="שם מלא" aria-label="שם מלא" required>
+        <input type="tel" name="phone" placeholder="טלפון" aria-label="טלפון" required>
+        <input type="email" name="email" placeholder="אימייל" aria-label="אימייל">
+        <textarea rows="4" name="message" placeholder="הודעה" aria-label="הודעה"></textarea>
         <label class="checkbox-row"><input type="checkbox" required> אני מאשר שיתקשרו אליי</label>
         <button type="submit" class="btn" id="leadFormSubmit">שלח טופס</button>
-        <p id="leadFormStatus" style="display:none;font-weight:600;"></p>
+        <p id="leadFormStatus" role="status" aria-live="polite" style="display:none;font-weight:600;"></p>
       </form>
     </div>
     <script>
@@ -617,8 +579,8 @@
         <p>✉️ <a href="mailto:eladpolo@gmail.com">eladpolo@gmail.com</a></p>
         <p style="margin-top:10px;">הרב פישמן 1, הרצליה</p>
         <div class="footer-links" style="margin-top:16px;">
-          <a href="https://mitchabrim.co/privacy-policy/">מדיניות פרטיות</a>
-          <a href="https://mitchabrim.co/הצהרת-נגישות/">הצהרת נגישות</a>
+          <a href="/privacy-policy/">מדיניות פרטיות</a>
+          <a href="/accessibility-statement/">הצהרת נגישות</a>
         </div>
       </div>
       <div class="footer-img">
@@ -626,12 +588,12 @@
       </div>
     </div>
     <div class="footer-bottom">
-      © כל הזכויות שמורות לאלעד פולוסצקי — All rights reserved
+      © כל הזכויות שמורות לאלעד פולוסצקי<br>All rights reserved
     </div>
   </div>
 </footer>
 
-<a href="https://wa.me/9720522-862281" class="whatsapp-float" title="WhatsApp us">💬</a>
+<a href="https://wa.me/972522862281" class="whatsapp-float" title="WhatsApp us">💬</a>
 
 <script>
   (function(){
@@ -651,6 +613,10 @@
       navigation.classList.toggle('is-open', willOpen);
       menuButton.setAttribute('aria-expanded', String(willOpen));
       menuButton.setAttribute('aria-label', willOpen ? 'סגירת תפריט ניווט' : 'פתיחת תפריט ניווט');
+      if (willOpen) {
+        var firstLink = navigation.querySelector('a');
+        if (firstLink) firstLink.focus();
+      }
     });
 
     navigation.addEventListener('click', function(event){
