@@ -117,9 +117,15 @@
   .hero-bg{position:absolute;inset:0;z-index:0;}
   .hero-slide{
     position:absolute;inset:0;opacity:0;transform:scale(1);
-    transition:opacity 1.4s ease-in-out, transform 8s ease-in-out;
+    transition:opacity 1.4s cubic-bezier(.4,0,.2,1);
   }
-  .hero-slide.is-active{opacity:1;transform:scale(1.06);}
+  .hero-slide.is-active{opacity:1;}
+  html.hero-rotation-ready .hero-slide.is-active,
+  html.hero-rotation-ready .hero-slide.is-leaving{animation:hero-photo-zoom 8s ease-out both;}
+  @keyframes hero-photo-zoom{
+    from{transform:scale(1.015);}
+    to{transform:scale(1.085);}
+  }
   .hero-slide img{width:100%;height:100%;object-fit:cover;display:block;}
   .hero .container{position:relative;z-index:2;}
   .hero-panel{
@@ -359,8 +365,9 @@
     html{scroll-behavior:auto;}
     .btn,.card{transition:none;}
     .btn:hover,.card:hover{transform:none;}
-    .hero-slide{transition:none;}
-    .hero-slide.is-active{transform:none;}
+    .hero-slide{animation:none;transition:none;transform:none;}
+    html.hero-rotation-ready .hero-slide.is-active,
+    html.hero-rotation-ready .hero-slide.is-leaving{animation:none;transform:none;}
     html.motion-ready .reveal-item,
     html.motion-ready .hero-panel .brand-label,
     html.motion-ready .hero-panel .hero-hairline,
@@ -892,6 +899,9 @@
     if (reduceMotion) return;
 
     var current = 0;
+    var previousLeaving = null;
+
+    document.documentElement.classList.add('hero-rotation-ready');
 
     function isLoaded(slide){
       var img = slide.querySelector('img');
@@ -902,11 +912,14 @@
       var next = (current + 1) % slides.length;
       if (!isLoaded(slides[next])) return;
       slides[current].classList.remove('is-active');
+      slides[current].classList.add('is-leaving');
+      if (previousLeaving) previousLeaving.classList.remove('is-leaving');
+      previousLeaving = slides[current];
       slides[next].classList.add('is-active');
       current = next;
     }
 
-    setInterval(advance, 1500);
+    setInterval(advance, 5500);
   })();
 </script>
 
