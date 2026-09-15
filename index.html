@@ -282,6 +282,13 @@
   .lecture-card h3{font-size:1.1rem;margin-bottom:12px;}
   .lecture-card p{color:#3d4a63;font-size:.95rem;margin-bottom:14px;}
   .lecture-price{font-weight:700;color:var(--terracotta);}
+  @media(min-width:1024px){
+    #lectures .cards{grid-template-columns:repeat(6,1fr);}
+    #lectures .lecture-card{grid-column:span 2;}
+    #lectures .lecture-card:nth-child(4){grid-column:2 / span 2;}
+    #lectures .lecture-card:nth-child(5){grid-column:4 / span 2;}
+    #workshops .cards{grid-template-columns:repeat(3,1fr);}
+  }
 
   /* LIFEBOOK */
   .lifebook-wrap{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:start;}
