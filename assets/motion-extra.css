@@ -93,12 +93,12 @@ html.motion-ready .mx-glow-host.is-revealed .mx-glow-edge{
 }
 .mx-blob-a{
   width:360px;height:360px;
-  top:-90px;right:-110px;
+  top:10px;right:-110px;
   animation:mx-float-a 16s ease-in-out infinite alternate;
 }
 .mx-blob-b{
   width:260px;height:260px;
-  bottom:-70px;left:-80px;
+  bottom:60px;left:-80px;
   animation:mx-float-b 19s ease-in-out infinite alternate;
 }
 .mx-has-blobs.mx-offscreen .mx-blob{animation-play-state:paused;}
@@ -111,8 +111,8 @@ html.motion-ready .mx-glow-host.is-revealed .mx-glow-edge{
   to{transform:translate(50px,-44px) scale(1.1);}
 }
 @media(max-width:640px){
-  .mx-blob-a{width:240px;height:240px;top:-60px;right:-80px;}
-  .mx-blob-b{width:190px;height:190px;bottom:-50px;left:-60px;}
+  .mx-blob-a{width:240px;height:240px;top:10px;right:-80px;}
+  .mx-blob-b{width:190px;height:190px;bottom:50px;left:-60px;}
 }
 
 /* Reduced motion: everything stays visible, nothing moves */
