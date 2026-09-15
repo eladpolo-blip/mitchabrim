@@ -229,6 +229,7 @@
   form.contact-form input, form.contact-form textarea{
     padding:14px 18px;border-radius:12px;border:none;font-family:inherit;font-size:1rem;
   }
+  form.contact-form input[type="tel"]{text-align:right;}
   .checkbox-row{display:flex;align-items:center;gap:8px;justify-content:center;font-size:.9rem;}
 
   /* FOOTER */
@@ -264,7 +265,7 @@
   .lecture-price{font-weight:700;color:var(--terracotta);}
 
   /* LIFEBOOK */
-  .lifebook-wrap{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center;}
+  .lifebook-wrap{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:start;}
   @media(max-width:800px){.lifebook-wrap{grid-template-columns:1fr;}}
   .lifebook-images{display:grid;gap:20px;}
   .lifebook-images img{border-radius:18px;box-shadow:var(--shadow);}
