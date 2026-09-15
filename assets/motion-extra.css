@@ -1,0 +1,125 @@
+/* motion-extra.css : extra motion elements (marquee band, glowing card edges, floating shapes).
+   Everything here is added by assets/motion-extra.js. Without JS nothing on the page changes.
+   Only transform and opacity are animated. All class names start with mx-. */
+
+/* 1. Marquee band: slowly moving strip of workshop names, above the workshops section */
+.mx-marquee{
+  position:relative;
+  overflow:hidden;
+  width:100%;
+  max-width:100%;
+  background:#BEE6FF;
+  padding:18px 0;
+  -webkit-mask-image:linear-gradient(to right, transparent 0, #000 8%, #000 92%, transparent 100%);
+  mask-image:linear-gradient(to right, transparent 0, #000 8%, #000 92%, transparent 100%);
+}
+.mx-marquee-track{
+  display:flex;
+  width:max-content;
+  direction:rtl;
+  will-change:transform;
+  animation:mx-marquee var(--mx-marquee-duration, 60s) linear infinite;
+}
+.mx-marquee-group{
+  display:flex;
+  align-items:center;
+  flex:0 0 auto;
+  white-space:nowrap;
+}
+.mx-marquee-item{
+  font-family:'Heebo',sans-serif;
+  font-weight:700;
+  font-size:1.25rem;
+  line-height:1.4;
+  color:#101A3D;
+  padding:0 6px;
+}
+.mx-marquee-dot{
+  display:inline-block;
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:#1E9FE0;
+  margin:0 22px;
+  flex:0 0 auto;
+}
+.mx-marquee:hover .mx-marquee-track,
+.mx-marquee.mx-offscreen .mx-marquee-track{animation-play-state:paused;}
+@keyframes mx-marquee{
+  from{transform:translateX(0);}
+  to{transform:translateX(50%);}
+}
+@media(max-width:640px){
+  .mx-marquee{padding:14px 0;}
+  .mx-marquee-item{font-size:1.1rem;}
+  .mx-marquee-dot{margin:0 16px;}
+}
+
+/* 2. Glowing card edges: a soft light-blue ring and glow on hover, plus one gentle pulse when a card reveals */
+.mx-glow-host{position:relative;}
+.mx-glow-edge{
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  opacity:0;
+  z-index:2;
+  box-shadow:inset 0 0 0 2px rgba(125,211,252,.95), 0 0 0 1px rgba(30,159,224,.3), 0 14px 40px rgba(30,159,224,.3);
+  transition:opacity .45s ease;
+}
+@media(hover:hover){
+  .mx-glow-host:hover .mx-glow-edge{opacity:1;}
+}
+html.motion-ready .mx-glow-host.is-revealed .mx-glow-edge{
+  animation:mx-glow-pulse 1.9s ease-out calc(var(--reveal-delay,0ms) + 520ms) 1;
+}
+@keyframes mx-glow-pulse{
+  0%{opacity:0;}
+  35%{opacity:.85;}
+  100%{opacity:0;}
+}
+
+/* 3. Floating shapes: soft light-blue circles drifting slowly behind a few sections */
+.mx-has-blobs{position:relative;overflow:hidden;}
+.mx-has-blobs > .container{position:relative;z-index:1;}
+.mx-blob{
+  position:absolute;
+  z-index:0;
+  border-radius:50%;
+  pointer-events:none;
+  background:radial-gradient(circle at center, rgba(125,211,252,.55) 0%, rgba(190,230,255,.35) 38%, rgba(190,230,255,0) 70%);
+  will-change:transform;
+  opacity:.9;
+}
+.mx-blob-a{
+  width:360px;height:360px;
+  top:10px;right:-110px;
+  animation:mx-float-a 16s ease-in-out infinite alternate;
+}
+.mx-blob-b{
+  width:260px;height:260px;
+  bottom:60px;left:-80px;
+  animation:mx-float-b 19s ease-in-out infinite alternate;
+}
+.mx-has-blobs.mx-offscreen .mx-blob{animation-play-state:paused;}
+@keyframes mx-float-a{
+  from{transform:translate(0,0) scale(1);}
+  to{transform:translate(-46px,54px) scale(1.12);}
+}
+@keyframes mx-float-b{
+  from{transform:translate(0,0) scale(1);}
+  to{transform:translate(50px,-44px) scale(1.1);}
+}
+@media(max-width:640px){
+  .mx-blob-a{width:240px;height:240px;top:10px;right:-80px;}
+  .mx-blob-b{width:190px;height:190px;bottom:50px;left:-60px;}
+}
+
+/* Reduced motion: everything stays visible, nothing moves */
+@media(prefers-reduced-motion: reduce){
+  .mx-marquee-track,
+  .mx-blob,
+  .mx-glow-edge{animation:none !important;}
+  .mx-glow-edge{transition:none;}
+  .mx-marquee{-webkit-mask-image:none;mask-image:none;}
+}

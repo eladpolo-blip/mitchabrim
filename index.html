@@ -115,18 +115,64 @@
     background:var(--cream);
   }
   .hero-bg{position:absolute;inset:0;z-index:0;}
-  .hero-bg img{position:absolute;top:0;height:100%;width:50%;object-fit:cover;filter:saturate(.85);}
-  .hero-bg img.bg-left{left:0;}
-  .hero-bg img.bg-right{right:0;}
-  .hero-overlay{
-    position:absolute;inset:0;z-index:1;
-    background:linear-gradient(180deg, rgba(243,249,255,.55) 0%, rgba(243,249,255,.9) 62%, var(--cream) 100%);
+  .hero-slide{
+    position:absolute;inset:0;opacity:0;transform:scale(1);
+    transition:opacity 1.4s cubic-bezier(.4,0,.2,1);
   }
+  .hero-slide.is-active{opacity:1;}
+  html.hero-rotation-ready .hero-slide.is-active,
+  html.hero-rotation-ready .hero-slide.is-leaving{animation:hero-photo-zoom 8s ease-out both;}
+  @keyframes hero-photo-zoom{
+    from{transform:scale(1.015);}
+    to{transform:scale(1.085);}
+  }
+  .hero-slide img{width:100%;height:100%;object-fit:cover;display:block;}
   .hero .container{position:relative;z-index:2;}
-  .brand-label{font-size:1.1rem;letter-spacing:.15em;color:var(--terracotta);font-weight:700;margin-bottom:18px;}
-  .hero h2{font-size:2.6rem;max-width:820px;margin:0 auto 32px;line-height:1.35;}
-  @media(max-width:640px){.hero h2{font-size:1.8rem;}}
-  @media(max-width:700px){.hero-bg img{width:100%;opacity:.6;}.hero-bg img.bg-right{display:none;}}
+  .hero-panel{
+    position:relative;
+    isolation:isolate;
+    max-width:780px;
+    margin:0 auto;
+    padding:46px 54px;
+  }
+  .hero-panel::before{
+    content:"";
+    position:absolute;
+    z-index:-1;
+    inset:-22px -36px;
+    background:radial-gradient(ellipse at center, rgba(243,249,255,.84) 0%, rgba(243,249,255,.74) 36%, rgba(243,249,255,.46) 58%, rgba(243,249,255,.12) 74%, rgba(243,249,255,0) 88%);
+    filter:blur(5px);
+    pointer-events:none;
+  }
+  .brand-label{font-size:.92rem;letter-spacing:normal;color:#101A3D;font-weight:700;margin-bottom:12px;}
+  .hero-hairline{
+    display:block;width:72px;height:1px;margin:0 auto 18px;background:#1E9FE0;
+    transform-origin:center;
+  }
+  .hero h2{
+    font-size:2.18rem;margin:0 0 24px;line-height:1.4;color:#101A3D;font-weight:500;
+    text-wrap:balance;text-shadow:0 1px 10px rgba(243,249,255,.98), 0 0 3px rgba(243,249,255,1);
+  }
+  .hero-line{display:block;}
+  .hero-nowrap{white-space:nowrap;}
+  .hero-link{
+    min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:9px;
+    color:#101A3D;font-weight:700;touch-action:manipulation;
+  }
+  .hero-link-text{line-height:1.35;padding-bottom:2px;border-bottom:2px solid #1E9FE0;}
+  .hero-chevron{
+    width:9px;height:9px;border-left:2px solid #1E9FE0;border-bottom:2px solid #1E9FE0;
+    transform:rotate(45deg);flex:0 0 auto;
+  }
+  .hero-link:focus-visible{outline:3px solid #1E9FE0;outline-offset:4px;border-radius:3px;}
+  @media(max-width:640px){
+    .hero{padding:80px 0 60px;}
+    .hero-panel{padding:34px 12px;max-width:100%;}
+    .hero-panel::before{inset:-24px -6px;background:radial-gradient(ellipse at center, rgba(243,249,255,.84) 0%, rgba(243,249,255,.74) 40%, rgba(243,249,255,.46) 62%, rgba(243,249,255,.12) 78%, rgba(243,249,255,0) 92%);}
+    .brand-label{font-size:.82rem;}
+    .hero-hairline{width:58px;margin-bottom:16px;}
+    .hero h2{font-size:1.48rem;line-height:1.42;margin-bottom:20px;}
+  }
 
   /* WORKSHOPS */
   .section-title{text-align:center;margin-bottom:50px;}
@@ -239,7 +285,8 @@
   }
   footer a:hover{color:#fff;}
   .footer-links{display:flex;gap:24px;flex-wrap:wrap;}
-  .footer-img{border-radius:18px;overflow:hidden;max-width:320px;}
+  .footer-img{border-radius:18px;overflow:hidden;flex:0 1 520px;max-width:520px;}
+  .footer-img img{width:100%;height:auto;}
   .footer-bottom{
     border-top:1px solid rgba(255,255,255,.12);padding-top:24px;text-align:center;font-size:.85rem;color:#9aa294;
   }
@@ -275,11 +322,74 @@
   .lifebook-wrap{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:start;}
   @media(max-width:800px){.lifebook-wrap{grid-template-columns:1fr;}}
   .lifebook-images{display:grid;gap:20px;}
+  @media(min-width:1024px){
+    .lifebook-wrap{grid-template-columns:minmax(0,1fr) minmax(0,2fr) minmax(0,1fr);gap:32px;}
+    .lifebook-images{display:contents;}
+    .lifebook-images img:first-child{grid-column:1;grid-row:1;}
+    .lifebook-text{grid-column:2;grid-row:1;}
+    .lifebook-images img:last-child{grid-column:3;grid-row:1;}
+  }
   .lifebook-images img{border-radius:18px;box-shadow:var(--shadow);}
   .lifebook-text p{color:#3d4a63;margin-bottom:16px;line-height:1.75;}
   .lifebook-price{display:inline-block;background:var(--terracotta);color:#fff;padding:6px 16px;border-radius:20px;font-weight:700;font-size:.9rem;margin-bottom:18px;}
   #lifebook h2 img{max-width:420px;width:100%;display:block;margin:0 auto;border-radius:12px;}
   @media(max-width:640px){#lifebook h2 img{max-width:80%;}}
+
+  /* MOTION */
+  .heading-highlight{
+    position:relative;display:inline-block;z-index:0;color:#fff;
+    line-height:1.25;padding:.06em .32em .12em;margin:0 .04em;border-radius:.34em;
+  }
+  .heading-highlight::before{
+    content:"";position:absolute;z-index:-1;inset:0;border-radius:inherit;
+    background:linear-gradient(135deg,#1580B3 0%,#1E9FE0 100%);box-shadow:0 8px 20px rgba(21,128,179,.28);
+    transform:scaleX(1);transform-origin:right center;
+  }
+  html.motion-ready .reveal-item{
+    opacity:0;transform:translateY(24px);filter:blur(4px);
+    transition:opacity 1s cubic-bezier(.22,1,.36,1) var(--reveal-delay,0ms), transform 1s cubic-bezier(.22,1,.36,1) var(--reveal-delay,0ms), filter 1s cubic-bezier(.22,1,.36,1) var(--reveal-delay,0ms);
+    will-change:opacity,transform,filter;
+  }
+  html.motion-ready .reveal-item.is-revealed{opacity:1;transform:translateY(0);filter:blur(0);will-change:auto;}
+  html.motion-ready .heading-highlight{color:var(--forest);}
+  html.motion-ready .why-bg .heading-highlight{color:#fff;}
+  html.motion-ready .heading-highlight::before{transform:scaleX(0);}
+  html.motion-ready .reveal-item.is-revealed .heading-highlight{
+    color:#fff;transition:color .35s ease calc(var(--reveal-delay,0ms) + 640ms);
+  }
+  html.motion-ready .reveal-item.is-revealed .heading-highlight::before{
+    transform:scaleX(1);transition:transform .65s cubic-bezier(.22,1,.36,1) calc(var(--reveal-delay,0ms) + 475ms);
+  }
+  html.motion-ready .hero-panel .brand-label,
+  html.motion-ready .hero-panel .hero-hairline,
+  html.motion-ready .hero-panel .hero-word,
+  html.motion-ready .hero-panel .hero-link{
+    opacity:0;filter:blur(4px);transform:translateY(11px);
+  }
+  html.motion-ready .hero-panel .hero-hairline{transform:scaleX(0);filter:none;}
+  html.motion-ready .hero-panel .hero-word{display:inline-block;}
+  html.motion-ready.hero-intro-started .hero-panel .brand-label{opacity:1;filter:blur(0);transform:translateY(0);transition:opacity .625s ease-out .1s, filter .625s ease-out .1s, transform .625s ease-out .1s;}
+  html.motion-ready.hero-intro-started .hero-panel .hero-hairline{opacity:1;transform:scaleX(1);transition:opacity .625s ease-out .35s, transform .725s cubic-bezier(.22,1,.36,1) .35s;}
+  html.motion-ready.hero-intro-started .hero-panel .hero-word{opacity:1;filter:blur(0);transform:translateY(0);transition:opacity .625s ease-out var(--word-delay), filter .625s ease-out var(--word-delay), transform .625s ease-out var(--word-delay);}
+  html.motion-ready.hero-intro-started .hero-panel .hero-link{opacity:1;filter:blur(0);transform:translateY(0);transition:opacity .69s ease-out 2.6s, filter .69s ease-out 2.6s, transform .69s ease-out 2.6s;}
+  @media(hover:hover){
+    html.motion-ready .card.reveal-item.is-revealed:hover{transform:translateY(-6px);}
+  }
+  @media(prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .btn,.card{transition:none;}
+    .btn:hover,.card:hover{transform:none;}
+    .hero-slide{animation:none;transition:none;transform:none;}
+    html.hero-rotation-ready .hero-slide.is-active,
+    html.hero-rotation-ready .hero-slide.is-leaving{animation:none;transform:none;}
+    html.motion-ready .reveal-item,
+    html.motion-ready .hero-panel .brand-label,
+    html.motion-ready .hero-panel .hero-hairline,
+    html.motion-ready .hero-panel .hero-word,
+    html.motion-ready .hero-panel .hero-link{opacity:1;transform:none;filter:none;transition:none;}
+    html.motion-ready .heading-highlight::before{transform:scaleX(1);transition:none;}
+    html.motion-ready .heading-highlight{color:#fff;transition:none;}
+  }
 
   .whatsapp-float{
     position:fixed;bottom:24px;left:24px;background:#25D366;color:#fff;
@@ -287,6 +397,7 @@
     box-shadow:0 8px 24px rgba(0,0,0,.25);font-size:1.6rem;z-index:200;
   }
 </style>
+<link rel="stylesheet" href="assets/motion-extra.css">
 </head>
 <body>
 
@@ -314,14 +425,38 @@
 
 <section class="hero" id="top">
   <div class="hero-bg">
-    <img class="bg-left" src="assets/hero-bg-1.webp" alt="">
-    <img class="bg-right" src="assets/hero-bg-2.webp" alt="">
+    <picture class="hero-slide is-active">
+      <source media="(max-width:700px)" srcset="assets/hero/phone-01.webp">
+      <img src="assets/hero/desktop-01.webp" alt="" fetchpriority="high">
+    </picture>
+    <picture class="hero-slide">
+      <source media="(max-width:700px)" srcset="assets/hero/phone-04.webp">
+      <img src="assets/hero/desktop-04.webp" alt="">
+    </picture>
+    <picture class="hero-slide">
+      <source media="(max-width:700px)" srcset="assets/hero/phone-06.webp">
+      <img src="assets/hero/desktop-06.webp" alt="">
+    </picture>
+    <picture class="hero-slide">
+      <source media="(max-width:700px)" srcset="assets/hero/phone-07.webp">
+      <img src="assets/hero/desktop-07.webp" alt="">
+    </picture>
+    <picture class="hero-slide">
+      <source media="(max-width:700px)" srcset="assets/hero/phone-09.webp">
+      <img src="assets/hero/desktop-09.webp" alt="">
+    </picture>
+    <picture class="hero-slide">
+      <source media="(max-width:700px)" srcset="assets/hero/phone-27.webp">
+      <img src="assets/hero/desktop-27.webp" alt="">
+    </picture>
   </div>
-  <div class="hero-overlay"></div>
   <div class="container">
-    <div class="brand-label">מתחברים</div>
-    <h2>יחד בכל שלב בחיים, כי בכל גיל יש הזדמנות לצמוח, לרכוש ידע וליהנות מהחיים</h2>
-    <a href="#contact" class="btn">השאירו פרטים</a>
+    <div class="hero-panel">
+      <div class="brand-label">מתחברים</div>
+      <span class="hero-hairline" aria-hidden="true"></span>
+      <h2 aria-label="יחד בכל שלב בחיים, כי בכל גיל יש הזדמנות לצמוח, לרכוש ידע וליהנות מהחיים"><span class="hero-line">יחד בכל שלב בחיים,</span> <span class="hero-line"><span class="hero-nowrap">כי בכל גיל</span> יש הזדמנות לצמוח,</span> <span class="hero-line">לרכוש ידע וליהנות מהחיים</span></h2>
+      <a href="#contact" class="hero-link"><span class="hero-link-text">השאירו פרטים</span><span class="hero-chevron" aria-hidden="true"></span></a>
+    </div>
   </div>
 </section>
 
@@ -333,7 +468,7 @@
     </div>
     <div>
       <span class="eyebrow">מאין הגיע הרעיון</span>
-      <h2>הסיפור שלנו</h2>
+      <h2><span class="heading-highlight">הסיפור</span> שלנו</h2>
       <p>במהלך השנים שבהן ראיתי את סבתא שלי משתעממת מול הטלוויזיה כל היום, זה כאב לי בלב והבנתי עד כמה חשוב להוסיף משמעות ועניין לחיי היום-יום שלה. זה הוציא אותי לדרך במטרה להפיג את תחושת הבדידות, להוסיף חיות ותשוקה ליום-יום, ולעודד ולחזק את התחושת הערך והעניין שלה. המיזם שלנו נולד מתוך הרצון לסייע גם לאנשים אחרים לצאת מתחושות של שעמום ובידוד, וליצור מרחב חווייתי, יצירתי ומעשיר שמחבר בין לבבות, ומביא לדרך חיים מלאה יותר, עם חיות, משמעות והזדמנויות חדשות.</p>
     </div>
   </div>
@@ -353,7 +488,7 @@
   <div class="container">
     <div class="section-title">
       <span class="eyebrow" style="color:#7DD3FC;">היתרונות שלנו</span>
-      <h2>למה דווקא אנחנו?</h2>
+      <h2>למה דווקא <span class="heading-highlight">אנחנו</span>?</h2>
     </div>
     <div class="why-grid">
       <div class="why-item">
@@ -409,7 +544,7 @@
   <div class="container">
     <div class="section-title">
       <span class="eyebrow">ידע ותובנות</span>
-      <h2>ההרצאות שלנו</h2>
+      <h2><span class="heading-highlight">ההרצאות</span> שלנו</h2>
     </div>
     <div class="cards">
       <div class="lecture-card">
@@ -440,7 +575,7 @@
   <div class="container">
     <div class="section-title">
       <span class="eyebrow">מה אנחנו מציעים</span>
-      <h2>הסדנאות שלנו</h2>
+      <h2><span class="heading-highlight">הסדנאות</span> שלנו</h2>
     </div>
     <div class="cards">
       <div class="card">
@@ -524,7 +659,7 @@
 <section id="contact">
   <div class="container">
     <div class="contact-bg">
-      <h2>רוצה להצטרף אלינו?</h2>
+      <h2>רוצה <span class="heading-highlight">להצטרף</span> אלינו?</h2>
       <p>השאירו פרטים ונחזור אליך בהקדם האפשרי!</p>
       <form class="contact-form" id="leadForm" action="https://formsubmit.co/ajax/eladpolo@gmail.com" method="POST">
         <input type="hidden" name="_subject" value="פנייה חדשה מהאתר - מתחברים">
@@ -591,7 +726,7 @@
         </div>
       </div>
       <div class="footer-img">
-        <img src="https://mitchabrim.co/wp-content/uploads/2025/09/they-love-spending-time-together-1024x684.jpg" alt="">
+        <img src="assets/hero/footer-09.webp" alt="">
       </div>
     </div>
     <div class="footer-bottom">
@@ -648,6 +783,162 @@
     });
   })();
 </script>
+
+<script>
+  (function(){
+    var root = document.documentElement;
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var heroHeading = document.querySelector('.hero h2');
+    var revealTargets = [];
+    var seen = [];
+    var observer;
+    var scrollQueued = false;
+
+    function addReveal(selector){
+      document.querySelectorAll(selector).forEach(function(element){
+        if (seen.indexOf(element) !== -1) return;
+        seen.push(element);
+        element.classList.add('reveal-item');
+        revealTargets.push(element);
+      });
+    }
+
+    function splitWords(container){
+      Array.prototype.slice.call(container.childNodes).forEach(function(node){
+        if (node.nodeType === Node.TEXT_NODE) {
+          var fragment = document.createDocumentFragment();
+          node.nodeValue.split(/(\s+)/).forEach(function(part){
+            if (!part) return;
+            if (/^\s+$/.test(part)) {
+              fragment.appendChild(document.createTextNode(part));
+            } else {
+              var word = document.createElement('span');
+              word.className = 'hero-word';
+              word.setAttribute('aria-hidden', 'true');
+              word.textContent = part;
+              fragment.appendChild(word);
+            }
+          });
+          node.parentNode.replaceChild(fragment, node);
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          splitWords(node);
+        }
+      });
+    }
+
+    function reveal(element){
+      if (element.classList.contains('is-revealed')) return;
+      element.classList.add('is-revealed');
+      if (observer) observer.unobserve(element);
+    }
+
+    function revealPassed(){
+      revealTargets.forEach(function(element){
+        if (element.getBoundingClientRect().top < window.innerHeight * .94) reveal(element);
+      });
+    }
+
+    function revealAll(){
+      revealTargets.forEach(reveal);
+      root.classList.remove('motion-ready');
+      root.classList.remove('hero-intro-started');
+    }
+
+    if (!heroHeading || reduceMotion || typeof window.IntersectionObserver !== 'function') return;
+
+    splitWords(heroHeading);
+    document.querySelectorAll('.hero-word').forEach(function(word, index){
+      word.style.setProperty('--word-delay', (575 + index * 103) + 'ms');
+    });
+
+    addReveal('.section-title > .eyebrow, .section-title > h2');
+    addReveal('#about .story > div:first-child, #about .story > div:last-child > .eyebrow, #about .story > div:last-child > h2, #about .story > div:last-child > p');
+    addReveal('.facilitator-card, .why-item, .lecture-card, #workshops .card, .testimonial, .stats > *, .workshop-detail');
+    addReveal('#lifebook .lifebook-images img, #lifebook .lifebook-text');
+    addReveal('.gallery-intro, .gallery-quote, .gallery-grid > *, .gallery-outro');
+    addReveal('.why-bg .cta-row, #workshops .cards + p, .contact-bg > h2, .contact-bg > p, .contact-form');
+
+    document.querySelectorAll('.why-grid, #lectures .cards, #workshops .cards, .testimonials, .stats').forEach(function(group){
+      var rows = [];
+      Array.prototype.slice.call(group.children).forEach(function(card){
+        var top = Math.round(card.offsetTop);
+        var row = rows.filter(function(item){ return Math.abs(item.top - top) < 4; })[0];
+        if (!row) {
+          row = { top: top, cards: [] };
+          rows.push(row);
+        }
+        card.style.setProperty('--reveal-delay', (row.cards.length * 112) + 'ms');
+        row.cards.push(card);
+      });
+    });
+
+    observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) reveal(entry.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: .08 });
+
+    revealTargets.forEach(function(element){
+      if (element.getBoundingClientRect().top < window.innerHeight * .94) {
+        element.classList.add('is-revealed');
+      }
+      observer.observe(element);
+    });
+
+    window.addEventListener('scroll', function(){
+      if (scrollQueued) return;
+      scrollQueued = true;
+      window.requestAnimationFrame(function(){
+        scrollQueued = false;
+        revealPassed();
+      });
+    }, { passive:true });
+    window.addEventListener('hashchange', revealPassed);
+    window.addEventListener('error', function handleMotionError(event){
+      if (!event.error) return;
+      revealAll();
+      window.removeEventListener('error', handleMotionError);
+    });
+    window.addEventListener('unhandledrejection', revealAll, { once:true });
+
+    root.classList.add('motion-ready');
+    window.getComputedStyle(heroHeading.querySelector('.hero-word')).opacity;
+    window.setTimeout(function(){ root.classList.add('hero-intro-started'); }, 50);
+  })();
+</script>
+
+<script>
+  (function(){
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.hero-bg .hero-slide'));
+    if (!slides.length) return;
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return;
+
+    var current = 0;
+    var previousLeaving = null;
+
+    document.documentElement.classList.add('hero-rotation-ready');
+
+    function isLoaded(slide){
+      var img = slide.querySelector('img');
+      return !!img && img.complete && img.naturalWidth > 0;
+    }
+
+    function advance(){
+      var next = (current + 1) % slides.length;
+      if (!isLoaded(slides[next])) return;
+      slides[current].classList.remove('is-active');
+      slides[current].classList.add('is-leaving');
+      if (previousLeaving) previousLeaving.classList.remove('is-leaving');
+      previousLeaving = slides[current];
+      slides[next].classList.add('is-active');
+      current = next;
+    }
+
+    setInterval(advance, 5500);
+  })();
+</script>
+<script src="assets/motion-extra.js" defer></script>
 
 </body>
 </html>
