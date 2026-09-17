@@ -40,19 +40,30 @@
              No letter-spacing on Hebrew anywhere (DESIGN-LAW 37).
      ===================================================================== */
   :root{
+    /* NAMES MATCH VALUES. Three tokens used to be inherited from the original
+       file under names that described a different palette entirely:
+       --terracotta held a blue, --forest held a navy, --sage held a pale blue.
+       A name that lies about its value makes every later reader guess. They are
+       renamed here to what they actually are, and nothing else about them moved:
+         --terracotta #1E9FE0 -> --brand
+         --forest     #101A3D -> --navy
+         --sage       #7DD3FC -> --brand-light */
     --cream:#F3F9FF;
     --peach:#BEE6FF;
-    --terracotta:#1E9FE0;        /* brand blue, primary. Name kept from the original file. */
-    --brand-deep:#1580B3;        /* brand blue, deep end. Already on the page. */
-    --forest:#101A3D;
+    --brand:#1E9FE0;             /* brand blue, primary */
+    --brand-deep:#1580B3;        /* brand blue, deep end */
+    --brand-light:#7DD3FC;       /* brand blue, light end */
+    --navy:#101A3D;              /* the dark ground and the ink of every heading */
     --ink:#20263B;
     --ink-soft:#3d4a63;
-    --sage:#7DD3FC;
     --white:#FFFFFF;
     --whatsapp:#25D366;
 
-    /* THE ONE CARD LANGUAGE. One radius, one border weight, one glow. */
+    /* THE ONE CARD LANGUAGE. One border weight, one glow, and TWO radii on the
+       whole page: --panel-radius on every card, panel, framed image and field,
+       --chip-radius on every pill. Nothing boxy takes a third value. */
     --panel-radius:18px;
+    --chip-radius:40px;
     --panel-border:1px;
     --panel-line:rgba(21,128,179,.26);
     --panel-line-dark:rgba(125,211,252,.30);
@@ -69,6 +80,10 @@
     /* TWO TYPE SIZES FAR APART, weight extremes in between */
     --display:4rem;              /* desktop: 4.0x the 1rem body (DESIGN-LAW 29) */
     --display-sm:3.8rem;         /* phone: 3.8x, re-tuned not shrunk (DESIGN-LAW 30) */
+    /* ONE card-title size. The three card families used to run 1.15 / 1.15 /
+       1.1rem, a 0.05rem difference nobody can see and everybody has to
+       maintain. A single token means the next card family cannot drift. */
+    --card-title:1.15rem;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html{scroll-behavior:smooth;}
@@ -93,7 +108,7 @@
      Ink rather than accent, because an eyebrow is neither an action nor the
      one emphasised word (DESIGN-LAW 47). The accent shows up as the bar. */
   .eyebrow{
-    color:var(--forest);
+    color:var(--navy);
     font-weight:900;
     font-size:.85rem;
     display:flex;
@@ -104,24 +119,24 @@
   }
   .eyebrow::before{
     content:"";width:26px;height:3px;border-radius:3px;flex:0 0 auto;
-    background:linear-gradient(to left,var(--brand-deep),var(--terracotta));
+    background:linear-gradient(to left,var(--brand-deep),var(--brand));
     box-shadow:0 0 12px rgba(30,159,224,.55);
   }
   .story .eyebrow{justify-content:flex-start;}
 
-  h1,h2,h3{font-family:'Heebo',sans-serif;font-weight:900;color:var(--forest);}
+  h1,h2,h3{font-family:'Heebo',sans-serif;font-weight:900;color:var(--navy);}
   section{padding:80px 0;}
 
   /* THE ACTION. White on #1580B3 at 19.2px/900 is WCAG "large text" and
-     clears the 3:1 bar at 4.16:1; white on the lighter #1E9FE0 does not,
-     which is why the deep end of the family carries the button. */
+     clears the 3:1 bar at 4.4:1 measured; white on the lighter #1E9FE0 does
+     not, which is why the deep end of the family carries the button. */
   .btn{
     display:inline-flex;align-items:center;justify-content:center;
     min-height:54px;
     background:var(--brand-deep);
     color:#fff;
     padding:14px 34px;
-    border-radius:40px;
+    border-radius:var(--chip-radius);
     font-family:'Heebo',sans-serif;
     font-weight:900;
     font-size:1.2rem;
@@ -133,7 +148,21 @@
     transition:transform var(--fb) ease-out, box-shadow var(--fb) ease-out;
   }
   .btn:hover{transform:translateY(-3px);box-shadow:var(--panel-glow-lit);}
-  .btn:focus-visible{outline:3px solid var(--terracotta);outline-offset:3px;}
+  .btn:focus-visible{outline:3px solid var(--brand);outline-offset:3px;}
+
+  /* THE HEADER'S ACTION, the one small instance of the button.
+     At 16px/900 it is NOT WCAG "large text": that bar opens at 18.66px bold.
+     So it answers to the 4.5:1 body bar, and white on --brand-deep measures
+     4.4:1, which misses. It therefore takes the next step DOWN the page's own
+     ramp, --navy, exactly as .lifebook-price already does for exactly this
+     reason, and keeps the accent as its glow edge and its focus ring.
+     Measured after the change: white on --navy is 16.97:1. */
+  .btn-sm{
+    padding:12px 26px;
+    font-size:1rem;
+    background:var(--navy);
+    border-color:var(--panel-line-dark);
+  }
 
   /* HEADER */
   header{
@@ -146,14 +175,14 @@
     display:flex;align-items:center;justify-content:space-between;
     padding:14px 24px;max-width:1180px;margin:0 auto;
   }
-  .logo img{height:52px;border-radius:12px;}
+  .logo img{height:52px;border-radius:var(--panel-radius);}
   nav ul{display:flex;gap:30px;align-items:center;}
   /* Chrome weight is 700. The hover feedback is the accent underline growing
      from the inline-start edge, on the page's one feedback duration. */
   nav a{font-weight:700;font-size:1rem;position:relative;padding:6px 0;}
   nav a::after{
     content:"";position:absolute;inset-inline-start:0;bottom:0;height:2px;width:100%;
-    background:var(--terracotta);border-radius:2px;
+    background:var(--brand);border-radius:2px;
     transform:scaleX(0);transform-origin:left center;
     transition:transform var(--fb) ease-out;
   }
@@ -162,7 +191,7 @@
   [dir="rtl"] nav a::after{transform-origin:right center;}
   nav a:hover::after,nav a:focus-visible::after{transform:scaleX(1);}
   .menu-toggle{
-    display:none;background:none;border:none;color:var(--forest);cursor:pointer;
+    display:none;background:none;border:none;color:var(--navy);cursor:pointer;
     width:48px;height:48px;align-items:center;justify-content:center;flex-direction:column;gap:5px;
   }
   .menu-toggle span{display:block;width:24px;height:2px;border-radius:2px;background:currentColor;}
@@ -184,7 +213,7 @@
       border-top:1px solid rgba(16,26,61,.08);touch-action:manipulation;
     }
     .menu-toggle:focus-visible, header nav a:focus-visible{
-      outline:3px solid var(--terracotta);outline-offset:2px;
+      outline:3px solid var(--brand);outline-offset:2px;
     }
   }
 
@@ -199,7 +228,12 @@
   .hero-bg{position:absolute;inset:0;z-index:0;}
   .hero-slide{
     position:absolute;inset:0;opacity:0;
-    transition:opacity 1.4s cubic-bezier(.4,0,.2,1);   /* the page's own crossfade, kept */
+    /* THE CROSSFADE, brought back inside the law. It used to run 1.4s on
+       cubic-bezier(.4,0,.2,1): half a second past the band-2 ceiling, on a
+       curve that belongs to neither band. It is now the large-surface ceiling
+       itself, --enter-large .9s, on the page's own --ease-out. Same effect,
+       one number and one curve fewer to explain. */
+    transition:opacity var(--enter-large) var(--ease-out);
   }
   .hero-slide.is-active{opacity:1;}
   .hero-slide img{width:100%;height:100%;object-fit:cover;display:block;}
@@ -227,25 +261,34 @@
     max-width:780px;
     margin:0 auto;
     padding:42px 48px 46px;
-    border-radius:calc(var(--panel-radius) + 10px);
+    border-radius:var(--panel-radius);
     border:var(--panel-border) solid rgba(255,255,255,.62);
     /* Real glass, not fog. The tint is light enough that the photograph
        reads through it as colour and shape; the heavy blur is what makes
        Hebrew legible on top of six different photographs. The original
        radial haze that used to do this job is gone: two overlapping washes
-       left a visible seam across the picture. */
-    background:rgba(243,249,255,.52);
-    -webkit-backdrop-filter:blur(22px) saturate(125%);
-    backdrop-filter:blur(22px) saturate(125%);
+       left a visible seam across the picture.
+
+       THE SATURATE CAME DOWN, 1.25 to 0.85. Pushing saturation UP through
+       the glass took whatever was behind it and made it louder, and three of
+       the six hero photographs are warm interiors: the panel was smearing a
+       beige wash across a page whose whole palette is cool. Below 1 the glass
+       drains the picture instead of amplifying it, and the tint is now mixed
+       three parts --cream to one part --peach rather than --cream alone, so
+       the drained picture lands on the cool side of neutral. Both tint
+       colours are already on this page; no new colour enters here. */
+    background:rgba(228,244,255,.55);
+    -webkit-backdrop-filter:blur(22px) saturate(.85);
+    backdrop-filter:blur(22px) saturate(.85);
     box-shadow:var(--panel-glow-lit);
   }
   .brand-label{
-    font-size:.92rem;letter-spacing:normal;color:var(--forest);font-weight:900;
+    font-size:.92rem;letter-spacing:normal;color:var(--navy);font-weight:900;
     margin-bottom:14px;
   }
   .hero-hairline{
     display:block;width:96px;height:3px;border-radius:3px;margin:0 auto 22px;
-    background:linear-gradient(to left,var(--brand-deep),var(--terracotta),var(--sage));
+    background:linear-gradient(to left,var(--brand-deep),var(--brand),var(--brand-light));
     box-shadow:0 0 16px rgba(30,159,224,.65);
     transform-origin:center;
   }
@@ -254,7 +297,7 @@
      900 at 4x the body. Lines two and three are the same face at 300, far
      smaller. Two sizes far apart, and the extremes of the family between
      them. Nothing on this page sits in the middle. */
-  .hero h2{margin:0 0 30px;color:var(--forest);text-wrap:balance;}
+  .hero h2{margin:0 0 30px;color:var(--navy);text-wrap:balance;}
   .hero-line{display:block;}
   .hero-line:first-of-type{
     font-size:var(--display);font-weight:900;line-height:1.06;
@@ -266,25 +309,25 @@
      photograph behind the glass, and the people reading this page are the
      last people to give thin pale type to. */
   .hero-line:not(:first-of-type){
-    font-size:1.5rem;font-weight:300;line-height:1.45;color:var(--forest);
+    font-size:1.5rem;font-weight:300;line-height:1.45;color:var(--navy);
     text-shadow:0 1px 12px rgba(243,249,255,.85);
   }
   .hero-nowrap{white-space:nowrap;}
   .hero-link{
     min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:9px;
-    color:var(--forest);font-weight:900;font-size:1.2rem;touch-action:manipulation;
+    color:var(--navy);font-weight:900;font-size:1.2rem;touch-action:manipulation;
     transition:transform var(--fb) ease-out;
   }
   .hero-link:hover{transform:translateY(-2px);}
   .hero-link-text{
     line-height:1.35;padding-bottom:3px;
-    border-bottom:3px solid var(--terracotta);
+    border-bottom:3px solid var(--brand);
   }
   .hero-chevron{
-    width:10px;height:10px;border-left:3px solid var(--terracotta);border-bottom:3px solid var(--terracotta);
+    width:10px;height:10px;border-left:3px solid var(--brand);border-bottom:3px solid var(--brand);
     transform:rotate(45deg);flex:0 0 auto;
   }
-  .hero-link:focus-visible{outline:3px solid var(--terracotta);outline-offset:4px;border-radius:3px;}
+  .hero-link:focus-visible{outline:3px solid var(--brand);outline-offset:4px;border-radius:3px;}
 
   @media(max-width:640px){
     /* The phone gets its own decision, not a narrower copy (DESIGN-LAW 55):
@@ -315,7 +358,7 @@
   .facilitator-card,
   .why-item,
   .story img,
-  .lifebook-images img,
+  .lifebook-frame,
   .footer-img{
     border-radius:var(--panel-radius);
     border:var(--panel-border) solid var(--panel-line);
@@ -351,7 +394,12 @@
   .card{overflow:hidden;text-align:center;}
   .card-img{width:100%;height:170px;object-fit:cover;}
   .card-body{padding:26px 22px 30px;}
-  .card h3{font-size:1.15rem;font-weight:900;margin-bottom:18px;min-height:52px;}
+  /* NO MIN-HEIGHT. It used to be 52px, two lines' worth, on a title that is one
+     line in eight of the nine workshop cards: a 23px hole under every one of
+     them, plus an 18px gap reserved for a sibling that does not exist. The body
+     now closes on its own content and the padding does the breathing. */
+  .card h3{font-size:var(--card-title);font-weight:900;margin-bottom:18px;}
+  .card-body h3:last-child{margin-bottom:0;}
 
   /* STORY */
   .story{
@@ -363,7 +411,7 @@
   #about .story img{max-width:360px;width:100%;display:block;margin:0 auto;}
 
   /* WHY US. Black used as material, not as a background colour (DESIGN-LAW 49). */
-  .why-bg{background:var(--forest);color:#fff;}
+  .why-bg{background:var(--navy);color:#fff;}
   .why-bg .section-title h2{color:#fff;}
   .why-bg .eyebrow{color:#fff;}
   .why-grid{
@@ -375,11 +423,11 @@
   }
   .why-icon{width:52px;height:52px;margin:0 auto 18px;display:block;}
   .why-icon svg{
-    width:100%;height:100%;stroke:var(--sage);fill:none;stroke-width:1.6;
+    width:100%;height:100%;stroke:var(--brand-light);fill:none;stroke-width:1.6;
     stroke-linecap:round;stroke-linejoin:round;
     filter:drop-shadow(0 0 8px rgba(125,211,252,.55));
   }
-  .why-item h3{color:#fff;font-size:1.1rem;font-weight:900;margin-bottom:8px;}
+  .why-item h3{color:#fff;font-size:var(--card-title);font-weight:900;margin-bottom:0;}
 
   .cta-row{display:flex;gap:18px;justify-content:center;margin-top:40px;flex-wrap:wrap;}
 
@@ -389,16 +437,28 @@
   }
   @media(max-width:800px){.testimonials{grid-template-columns:1fr;}}
   .testimonial{padding:34px;}
-  .testimonial p{font-style:italic;color:var(--ink-soft);margin-bottom:18px;}
+  /* NO ITALIC. Hebrew has no italic: the browser fakes one by shearing the
+     letterforms, which is the tell that the type was never designed for it and
+     is the hardest thing on this page for an older reader to get through. The
+     quoted voice is carried the Hebrew way instead (DESIGN-LAW 37 and 38): a
+     weight step DOWN to 300, away from the 900 of the name underneath it, and a
+     small logical indent so the block reads as set-in speech. The quotation
+     marks in the copy are the client's own and are untouched. */
+  .testimonial p{
+    font-weight:300;
+    color:var(--ink-soft);
+    margin-bottom:18px;
+    padding-inline-start:16px;
+  }
   /* Ink at 900, not accent: #1E9FE0 on white is 2.96:1 and fails AA at this
      size, and a name is neither an action nor the emphasised word. */
-  .testimonial .name{font-weight:900;color:var(--forest);}
+  .testimonial .name{font-weight:900;color:var(--navy);}
 
   /* CONTACT. The same panel language at a larger radius, on the pale end of
      the one accent family. */
   .contact-bg{
     background:linear-gradient(135deg,#BEE6FF 0%,#DFF3FF 100%);
-    border-radius:calc(var(--panel-radius) + 14px);
+    border-radius:var(--panel-radius);
     border:var(--panel-border) solid var(--panel-line);
     box-shadow:var(--panel-glow);
     padding:64px 40px;
@@ -408,27 +468,117 @@
   .contact-bg p{margin-bottom:34px;color:#33507a;font-size:1.1rem;}
   form.contact-form{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:16px;}
   form.contact-form input, form.contact-form textarea{
-    padding:15px 18px;border-radius:12px;font-family:inherit;font-size:1rem;
+    padding:15px 18px;border-radius:var(--panel-radius);font-family:inherit;font-size:1rem;
     border:var(--panel-border) solid rgba(21,128,179,.22);
     background:var(--white);color:var(--ink);
     transition:box-shadow var(--fb) ease-out, border-color var(--fb) ease-out;
   }
   form.contact-form input:focus, form.contact-form textarea:focus{
-    outline:none;border-color:var(--terracotta);
+    outline:none;border-color:var(--brand);
     box-shadow:0 0 0 3px rgba(30,159,224,.30);
   }
   form.contact-form input[type="tel"]{text-align:right;}
-  .checkbox-row{display:flex;align-items:center;gap:8px;justify-content:center;font-size:.95rem;}
+
+  /* THE CONSENT CONTROL.
+     The native box paints at 13 by 13 and carried no padding of its own, so the
+     only thing to aim at was a third of the 44px minimum, on the one control
+     that gates the whole form, on a page built for hands that are not steady.
+     Three things change and nothing else:
+
+     1. THE LABEL IS THE TARGET. It wraps the input, so box and words are one
+        tap, and it is padded to a 44px minimum height. Nobody has to hit 13px.
+     2. THE NATIVE BOX IS HIDDEN, NOT REMOVED. It keeps its place in the DOM,
+        stays focusable, stays `required`, and still runs the browser's own
+        validation. Only its paint is dropped. display:none would have taken
+        the keyboard and the validation with it.
+     3. THE DRAWN BOX IS 24px and follows :checked, filling with the deep end
+        of the accent and showing a white tick. The deep end, not the light one:
+        white on #1E9FE0 measures 2.96:1 and misses even the 3:1 bar that a
+        drawn control answers to; white on #1580B3 measures 4.4:1.
+     Focus lands on the real input and paints its ring on the drawn box, so a
+     keyboard user can always see where they are. */
+  .checkbox-row{
+    position:relative;
+    display:flex;align-items:center;justify-content:center;gap:12px;
+    min-height:44px;
+    padding:10px 14px;
+    font-size:.95rem;
+    line-height:1.35;
+    border-radius:var(--panel-radius);
+    cursor:pointer;
+  }
+  .checkbox-row input[type="checkbox"]{
+    position:absolute;
+    inset-inline-start:14px;
+    top:50%;
+    width:24px;height:24px;margin:0;
+    transform:translateY(-50%);
+    opacity:0;
+    cursor:pointer;
+  }
+  .cb-box{
+    flex:0 0 auto;
+    width:24px;height:24px;
+    display:inline-flex;align-items:center;justify-content:center;
+    /* Derived from the panel radius rather than picked, so the page still
+       carries two authored box radii and not three. */
+    border-radius:calc(var(--panel-radius) / 3);
+    border:2px solid var(--brand-deep);
+    background:var(--white);
+    transition:background var(--fb) ease-out, border-color var(--fb) ease-out;
+  }
+  .cb-box svg{
+    width:15px;height:15px;
+    stroke:#fff;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;
+    opacity:0;
+    transition:opacity var(--fb) ease-out;
+  }
+  .checkbox-row input[type="checkbox"]:checked + .cb-box{
+    background:var(--brand-deep);border-color:var(--brand-deep);
+  }
+  .checkbox-row input[type="checkbox"]:checked + .cb-box svg{opacity:1;}
+  .checkbox-row input[type="checkbox"]:focus-visible + .cb-box{
+    outline:3px solid var(--brand-deep);outline-offset:3px;
+  }
+  @media(prefers-reduced-motion: reduce){
+    .cb-box,.cb-box svg{transition:none;}
+  }
 
   /* FOOTER. Tints of white instead of the two stray warm greys the original
      carried, so the palette stays at three neutrals plus the one accent. */
-  footer{background:var(--forest);color:rgba(255,255,255,.80);padding:60px 0 30px;}
+  footer{background:var(--navy);color:rgba(255,255,255,.80);padding:60px 0 30px;}
   .footer-top{
     display:flex;justify-content:space-between;flex-wrap:wrap;gap:30px;margin-bottom:40px;
   }
   footer a{transition:color var(--fb) ease-out;}
-  footer a:hover{color:var(--sage);}
+  footer a:hover{color:var(--brand-light);}
   .footer-links{display:flex;gap:24px;flex-wrap:wrap;}
+  /* The two legal links measured 26px of hit height, which is a line of text
+     and nothing else. Vertical padding takes them to the 44px minimum without
+     moving a single glyph: the text sits where it sat, the target grew around
+     it. They stay inline-flex so the padding actually counts as target. */
+  .footer-links a{
+    display:inline-flex;align-items:center;
+    min-height:44px;
+    padding-block:9px;
+  }
+  .footer-links a:focus-visible{outline:3px solid var(--brand-light);outline-offset:2px;border-radius:3px;}
+
+  /* FOOTER CONTACT ICONS. These two were a phone emoji and an envelope emoji,
+     the one place on the page where a glyph from a font was doing an icon's job
+     while every other icon on the page is a stroked outline (DESIGN-LAW 64).
+     They are now the same outlines as everywhere else. The phone is the exact
+     path the sticky bar already carries; the envelope is its match, drawn to
+     the same stroke weight and the same cap and join. Light end of the accent,
+     because the footer ground is --navy and the deep end disappears into it;
+     it is the same stroke the .why-icon set uses on that same navy band.
+     The text beside them is untouched. */
+  .footer-contact{display:flex;align-items:center;gap:10px;}
+  .footer-contact svg{
+    width:19px;height:19px;flex:0 0 auto;
+    stroke:var(--brand-light);fill:none;stroke-width:1.9;
+    stroke-linecap:round;stroke-linejoin:round;
+  }
   .footer-img{overflow:hidden;flex:0 1 520px;max-width:520px;border-color:var(--panel-line-dark);}
   .footer-img img{width:100%;height:auto;}
   .footer-bottom{
@@ -448,7 +598,7 @@
 
   /* LECTURES */
   .lecture-card{padding:32px 30px;}
-  .lecture-card h3{font-size:1.15rem;font-weight:900;margin-bottom:12px;}
+  .lecture-card h3{font-size:var(--card-title);font-weight:900;margin-bottom:12px;}
   .lecture-card p{color:var(--ink-soft);font-size:.98rem;margin-bottom:0;}
   @media(min-width:1024px){
     #lectures .cards{grid-template-columns:repeat(6,1fr);}
@@ -465,9 +615,9 @@
   @media(min-width:1024px){
     .lifebook-wrap{grid-template-columns:minmax(0,1fr) minmax(0,2fr) minmax(0,1fr);gap:32px;}
     .lifebook-images{display:contents;}
-    .lifebook-images img:first-child{grid-column:1;grid-row:1;}
+    .lifebook-images .lifebook-frame:first-child{grid-column:1;grid-row:1;}
     .lifebook-text{grid-column:2;grid-row:1;}
-    .lifebook-images img:last-child{grid-column:3;grid-row:1;}
+    .lifebook-images .lifebook-frame:last-child{grid-column:3;grid-row:1;}
   }
   @media (min-width:1280px){
     .lifebook-wrap{
@@ -480,13 +630,42 @@
   /* The price pill runs on ink, not on the light accent: white on #1E9FE0 is
      2.96:1 and fails at this size. It keeps the accent as its glow edge. */
   .lifebook-price{
-    display:inline-block;background:var(--forest);color:#fff;
-    padding:8px 18px;border-radius:24px;font-weight:900;font-size:.95rem;margin-bottom:20px;
+    display:inline-block;background:var(--navy);color:#fff;
+    padding:8px 18px;border-radius:var(--chip-radius);font-weight:900;font-size:.95rem;margin-bottom:20px;
     border:var(--panel-border) solid var(--panel-line-dark);
     box-shadow:var(--panel-glow);
   }
-  #lifebook h2 img{max-width:420px;width:100%;display:block;margin:0 auto;border-radius:12px;}
-  @media(max-width:640px){#lifebook h2 img{max-width:80%;}}
+  /* THE LIFEBOOK SECTION, REFRAMED.
+     The logo tile and the two flyers are Elad's own artwork and they stay
+     exactly as he drew them: nothing here recolours, crops or retouches a
+     single pixel of an image. What changed is what they are MOUNTED in.
+
+     They used to BE the page surface: three full-width slabs of warm beige and
+     warm brown sitting straight on a cool blue page, with the card treatment
+     welded onto the picture's own edge. At that size, with no mount, the
+     artwork was not a picture on the page, it was the page, and the palette
+     read as broken for the length of the section.
+
+     Each one now sits inside the page's one device, the glow-edged panel, with
+     a cool --cream mat around it, and each is one size step smaller than it
+     was. A warm document DISPLAYED on a cool page reads as a document. A warm
+     document that IS the page reads as a palette break. Same pictures, same
+     order, same alt text. */
+  .lifebook-frame{
+    display:block;
+    width:100%;
+    max-width:340px;
+    margin-inline:auto;
+    padding:14px;
+    background:var(--cream);
+  }
+  .lifebook-frame img{width:100%;display:block;}
+  /* The logo tile is the smallest of the three displayed cards. */
+  #lifebook .section-title .lifebook-frame{max-width:320px;}
+  @media(max-width:640px){
+    #lifebook .section-title .lifebook-frame{max-width:260px;}
+    .lifebook-frame{max-width:300px;}
+  }
 
   /* =====================================================================
      MOTION.  Band 1 is .3s. Band 2 is .5s, .9s on a large surface.
@@ -508,7 +687,7 @@
   }
   /* One deliberate inversion: on the navy band the pill goes pale and the
      text goes ink, which is the only way it reads against its own ground. */
-  .why-bg .heading-highlight{color:var(--forest);}
+  .why-bg .heading-highlight{color:var(--navy);}
   .why-bg .heading-highlight::before{
     background:linear-gradient(135deg,#BEE6FF 0%,#7DD3FC 100%);
     box-shadow:0 0 0 1px rgba(125,211,252,.7), 0 12px 30px rgba(125,211,252,.35);
@@ -525,14 +704,14 @@
   /* Before the pill sweeps in the word must still be readable on bare ground:
      ink on the light sections, white on the navy band. It flips as the pill
      arrives under it. */
-  html.motion-ready .heading-highlight{color:var(--forest);}
+  html.motion-ready .heading-highlight{color:var(--navy);}
   html.motion-ready .why-bg .heading-highlight{color:#fff;}
   html.motion-ready .heading-highlight::before{transform:scaleX(0);}
   html.motion-ready .reveal-item.is-revealed .heading-highlight{
     color:#fff;transition:color var(--fb) ease-out 420ms;
   }
   html.motion-ready .why-bg .reveal-item.is-revealed .heading-highlight{
-    color:var(--forest);transition:color var(--fb) ease-out 420ms;
+    color:var(--navy);transition:color var(--fb) ease-out 420ms;
   }
   html.motion-ready .reveal-item.is-revealed .heading-highlight::before{
     transform:scaleX(1);transition:transform var(--enter) var(--ease-out) 260ms;
@@ -596,7 +775,7 @@
     html.motion-ready .hero-panel .hero-link{opacity:1;transform:none;transition:none;}
     html.motion-ready .heading-highlight::before{transform:scaleX(1);transition:none;}
     html.motion-ready .heading-highlight{color:#fff;transition:none;}
-    html.motion-ready .why-bg .heading-highlight{color:var(--forest);}
+    html.motion-ready .why-bg .heading-highlight{color:var(--navy);}
   }
 
   /* THE PHONE'S OWN TYPE DECISION. 3.8x the body rather than the desktop
@@ -606,7 +785,7 @@
     .story h2,
     .contact-bg h2{font-size:var(--display-sm);line-height:1.02;}
     .section-title{margin-bottom:44px;}
-    .contact-bg{padding:48px 20px;border-radius:var(--panel-radius);}
+    .contact-bg{padding:48px 20px;}
     .facilitator-card{padding:30px 22px;}
     .lecture-card{padding:28px 24px;}
     .testimonial{padding:28px 24px;}
@@ -632,7 +811,7 @@
 
 <header>
   <div class="nav-wrap">
-    <a href="#top" class="logo"><img src="assets/logo.jpg" alt="מתחברים" style="border-radius:12px;"></a>
+    <a href="#top" class="logo"><img src="assets/logo.jpg" alt="מתחברים"></a>
     <nav id="primary-navigation">
       <ul>
         <li><a href="#top">ראשי</a></li>
@@ -648,7 +827,7 @@
       <span aria-hidden="true"></span>
       <span aria-hidden="true"></span>
     </button>
-    <a href="#contact" class="btn" style="padding:12px 26px;font-size:.9rem;">השאירו פרטים</a>
+    <a href="#contact" class="btn btn-sm">השאירו פרטים</a>
   </div>
 </header>
 
@@ -794,12 +973,15 @@
   <div class="container">
     <div class="section-title">
       <span class="eyebrow">מוצר חדש</span>
-      <h2><img src="assets/logo-lifebook.jpg" alt="Life Book"></h2>
+      <!-- Each of Elad's three LifeBook pictures is mounted in the page's own
+           glow-edged panel with a cool mat around it. The pictures themselves
+           are untouched: same files, same alt text, same order. -->
+      <h2><span class="lifebook-frame"><img src="assets/logo-lifebook.jpg" alt="Life Book"></span></h2>
     </div>
     <div class="lifebook-wrap">
       <div class="lifebook-images">
-        <img src="assets/lifebook-1.jpg" alt="הסיפורים של אמא שלך יכולים להישאר איתך לנצח">
-        <img src="assets/lifebook-2.jpg" alt="הסיפורים של ההורים שלכם הם חלק מהמורשת של כל המשפחה">
+        <div class="lifebook-frame"><img src="assets/lifebook-1.jpg" alt="הסיפורים של אמא שלך יכולים להישאר איתך לנצח"></div>
+        <div class="lifebook-frame"><img src="assets/lifebook-2.jpg" alt="הסיפורים של ההורים שלכם הם חלק מהמורשת של כל המשפחה"></div>
       </div>
       <div class="lifebook-text">
         <span class="lifebook-price">מחיר: 790 ש"ח</span>
@@ -1001,7 +1183,15 @@
         <input type="tel" name="phone" placeholder="טלפון" aria-label="טלפון" required>
         <input type="email" name="email" placeholder="אימייל" aria-label="אימייל">
         <textarea rows="4" name="message" placeholder="הודעה" aria-label="הודעה"></textarea>
-        <label class="checkbox-row"><input type="checkbox" required> אני מאשר שיתקשרו אליי</label>
+        <!-- The label wraps the input, so the box and the words are one 44px
+             target. The native box is hidden but still present, focusable and
+             required; the 24px box beside it is drawn by CSS and follows it.
+             Check icon: Lucide outline (ISC licence, lucide.dev), inline. -->
+        <label class="checkbox-row">
+          <input type="checkbox" required>
+          <span class="cb-box" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 13 4 4L19 7"/></svg></span>
+          <span class="cb-text">אני מאשר שיתקשרו אליי</span>
+        </label>
         <button type="submit" class="btn" id="leadFormSubmit">שלח טופס</button>
         <p id="leadFormStatus" role="status" aria-live="polite" style="display:none;font-weight:600;"></p>
       </form>
@@ -1025,7 +1215,7 @@
               form.reset();
               form.querySelectorAll('input, textarea, button').forEach(function(el){ el.style.display = 'none'; });
               statusEl.style.display = 'block';
-              statusEl.style.color = 'var(--forest)';
+              statusEl.style.color = 'var(--navy)';
               statusEl.textContent = 'תודה! הפרטים נשלחו בהצלחה, נחזור אליך בהקדם 💙';
             } else {
               throw new Error('שגיאת שרת');
@@ -1047,9 +1237,14 @@
   <div class="container">
     <div class="footer-top">
       <div>
-        <img src="assets/logo.jpg" alt="מתחברים" style="height:110px;margin-bottom:16px;border-radius:12px;">
-        <p>📞 <a href="tel:0522-862281">052-286-2281</a></p>
-        <p>✉️ <a href="mailto:eladpolo@gmail.com">eladpolo@gmail.com</a></p>
+        <img src="assets/logo.jpg" alt="מתחברים" style="height:110px;margin-bottom:16px;border-radius:var(--panel-radius);">
+        <!-- Phone and envelope as stroked outlines, the page's own icon
+             language, replacing the two emoji glyphs that used to stand here.
+             The phone is the same path the sticky bar carries; the envelope is
+             its match. Lucide outlines (ISC licence, lucide.dev), inline.
+             The numbers and the address beside them are untouched. -->
+        <p class="footer-contact"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg> <a href="tel:0522-862281">052-286-2281</a></p>
+        <p class="footer-contact"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4.5" width="20" height="15" rx="2"/><path d="m2.6 5.8 8.2 6.1a2 2 0 0 0 2.4 0l8.2-6.1"/></svg> <a href="mailto:eladpolo@gmail.com">eladpolo@gmail.com</a></p>
         <p style="margin-top:10px;">הרב פישמן 1, הרצליה</p>
         <div class="footer-links" style="margin-top:16px;">
           <a href="/privacy-policy/">מדיניות פרטיות</a>
@@ -1176,7 +1371,7 @@
     addReveal('.section-title > .eyebrow, .section-title > h2');
     addReveal('#about .story > div:first-child, #about .story > div:last-child > .eyebrow, #about .story > div:last-child > h2, #about .story > div:last-child > p');
     addReveal('.facilitator-card, .why-item, .lecture-card, #workshops .card, .testimonial, .stats > *, .workshop-detail');
-    addReveal('#lifebook .lifebook-images img, #lifebook .lifebook-text');
+    addReveal('#lifebook .lifebook-images .lifebook-frame, #lifebook .lifebook-text');
     addReveal('.gallery-intro, .gallery-quote, .gallery-grid > *, .gallery-outro');
     addReveal('.why-bg .cta-row, #workshops .cards + p, .contact-bg > h2, .contact-bg > p, .contact-form');
 

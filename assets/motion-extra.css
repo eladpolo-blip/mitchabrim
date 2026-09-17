@@ -10,8 +10,9 @@
    Law it answers to: motion-kit/docs/DESIGN-LAW.md, preset B (full volume).
      band 1, feedback   .3s ease-out
      band 2, entrance   .5s, .9s on a large surface, cubic-bezier(.22,1,.36,1)
-     continuous loops   2.4s to 30s, ease-in-out to bob, linear to glide
-   Nothing in this file sits between the two bands.
+     continuous loops   3s to 30s, ease-in-out to bob, linear to glide
+   Nothing in this file sits between the two bands, and no loop now runs under
+   the 3s floor (DESIGN-LAW 15).
 
    Every class starts with mx-.
    ========================================================================= */
@@ -30,16 +31,18 @@
        easing         ease-in-out on the loop, never ease-out, never a bounce
        near amplitude 15px, the reference's own measured travel
        direction      normal, infinite, fill none
-     from B1's per-icon table, verbatim
-       icon 1 near 2400ms delay 0    amp 15 blur 0
+     from B1's per-icon table, verbatim except the two marked RAISED
+       icon 1 near 2400ms RAISED to 3000ms  delay 0    amp 15 blur 0
        icon 2 mid  3600ms delay 620  amp 11 blur 1.5
-       icon 3 near 2800ms delay 1740 amp 15 blur 0
+       icon 3 near 2800ms RAISED to 3000ms  delay 1740 amp 15 blur 0
        icon 4 far  4200ms delay 900  amp 7  blur 3
        icon 5 mid  3200ms delay 2300 amp 11 blur 1.5
        icon 6 far  3900ms delay 1180 amp 7  blur 3
        icon 7 near 3000ms delay 2900 amp 15 blur 0
        sizes  near 72 mid 56 far 44, and on the phone 52 / 42 / 34
-       phone  drops icons 4 and 6, so five icons, not seven
+       phone  drops icons 4 and 6 per B1, and this build drops icon 7 as well,
+              so FOUR icons on a phone, not five: see the phone block below for
+              the panel rectangle that forced it
 
    WHAT THIS BUILD RE-MAPPED, recorded because B1 marks placement as
    "redesigned (default, tunable)" and asks for any change to be written down:
@@ -122,10 +125,19 @@
 }
 
 /* Per disc. Depth band, then B1's row, then the placement.
-   Positions are logical, so the field mirrors with the page. */
-.mx-ico-1{--size:72px;--op:1;   --blur:0px;   --amp:15px;--dur:2400ms;--delay:0ms;    inset-inline-start:8%; top:12%;}
+   Positions are logical, so the field mirrors with the page.
+
+   TWO DURATIONS WERE RAISED TO THE LOOP FLOOR. B1's table gave icon 1 a
+   2400ms period and icon 3 a 2800ms one. Both sit UNDER the 3s floor that
+   DESIGN-LAW 15 sets for a continuous loop, and a bob that short on a 72px
+   disc reads as a twitch rather than a drift. Both are now 3000ms, the floor
+   itself. Nothing else in the table moved: amplitude, delay, blur, opacity and
+   size are all still B1's. Icon 7 also runs 3000ms, so three discs now share a
+   period, but their delays are 0ms, 1740ms and 2900ms against three different
+   amplitudes, so no two are ever at the same point of the loop. */
+.mx-ico-1{--size:72px;--op:1;   --blur:0px;   --amp:15px;--dur:3000ms;--delay:0ms;    inset-inline-start:8%; top:12%;}
 .mx-ico-2{--size:56px;--op:.9;  --blur:1.5px; --amp:11px;--dur:3600ms;--delay:620ms;  inset-inline-start:16%;top:62%;}
-.mx-ico-3{--size:72px;--op:1;   --blur:0px;   --amp:15px;--dur:2800ms;--delay:1740ms; inset-inline-start:86%;top:16%;}
+.mx-ico-3{--size:72px;--op:1;   --blur:0px;   --amp:15px;--dur:3000ms;--delay:1740ms; inset-inline-start:86%;top:16%;}
 .mx-ico-4{--size:44px;--op:.78; --blur:3px;   --amp:7px; --dur:4200ms;--delay:900ms;  inset-inline-start:82%;top:70%;}
 .mx-ico-5{--size:56px;--op:.9;  --blur:1.5px; --amp:11px;--dur:3200ms;--delay:2300ms; inset-inline-start:14%;top:82%;}
 .mx-ico-6{--size:44px;--op:.78; --blur:3px;   --amp:7px; --dur:3900ms;--delay:1180ms; inset-inline-start:6%; top:88%;}
@@ -168,11 +180,11 @@ html.motion-ready.hero-intro-started .mx-field{
   display:block;
   max-width:264px;
   padding:13px 17px;
-  border-radius:16px;
+  border-radius:var(--panel-radius);
   background:rgba(255,255,255,.92);
   border:var(--panel-border) solid var(--panel-line);
   box-shadow:var(--panel-glow-lit);
-  color:var(--forest);
+  color:var(--navy);
   font-size:.9rem;
   line-height:1.45;
   text-align:start;
@@ -186,17 +198,17 @@ html.motion-ready.hero-intro-started .mx-field{
 .mx-chip-quote{display:block;font-weight:400;}
 .mx-chip-name{
   display:flex;align-items:center;gap:7px;
-  margin-top:8px;font-weight:900;font-size:.82rem;color:var(--forest);
+  margin-top:8px;font-weight:900;font-size:.82rem;color:var(--navy);
 }
 .mx-chip-name::before{
   content:"";width:7px;height:7px;border-radius:50%;flex:0 0 auto;
-  background:var(--terracotta);
+  background:var(--brand);
   box-shadow:0 0 8px rgba(30,159,224,.8);
 }
 .mx-chip-tag{
   max-width:none;
   padding:11px 22px;
-  border-radius:30px;
+  border-radius:var(--chip-radius);
   font-weight:900;
   font-size:.95rem;
   white-space:nowrap;
@@ -337,9 +349,14 @@ html.motion-ready.hero-intro-started .mx-chip{
   color:#fff;
   padding:0 4px;
 }
+/* The outline words carry a 2px stroke, not 1.5px. At 1.5px against a dark
+   brand gradient the counters filled in at the render sizes this page actually
+   uses and the words read as a slightly soft SOLID rather than as an outline,
+   which is the whole point of alternating them. Checked by eye at both widths
+   after the change: still hollow, not bold. */
 .mx-ribbon-word.is-outline{
   color:transparent;
-  -webkit-text-stroke:1.5px #7DD3FC;
+  -webkit-text-stroke:2px #7DD3FC;
 }
 .mx-ribbon-dot{
   display:inline-block;
@@ -348,7 +365,7 @@ html.motion-ready.hero-intro-started .mx-chip{
   border-radius:50%;
   flex:0 0 auto;
   margin:0 24px;
-  background:var(--sage);
+  background:var(--brand-light);
   box-shadow:0 0 12px rgba(125,211,252,.9);
 }
 .mx-ribbon:hover .mx-ribbon-track,
@@ -363,9 +380,17 @@ html.motion-ready.hero-intro-started .mx-chip{
    (DESIGN-LAW 55).
 
    Both actions already exist on the page. The form anchor is the solid brand
-   pill and it sits on the inline-start side, which the flex order puts on the
-   right in RTL. Elad's number is the second action, and its digits are
-   isolated with dir="ltr" so the punctuation cannot reorder inside Hebrew.
+   pill and it is FIRST in the flex order, which in RTL puts it at the
+   inline-start edge, the right. Elad's number is the second action, and its
+   digits are isolated with dir="ltr" so the punctuation cannot reorder inside
+   Hebrew.
+
+   MEASURED, so nobody has to re-derive it from a screenshot: at 412 wide the
+   pill's rectangle runs x 206 to 396 and the number's runs x 16 to 194. The
+   right edge of the screen is x 412, so the pill is the one at the inline
+   start and it is the first thing a Hebrew reader meets. A cropped picture of
+   this bar invites the opposite reading, because a left-to-right eye calls the
+   leftmost item "first". On this page the leftmost item is last.
 
    The bar is 72px: a 48px tap target with 12px of air above and below. The
    page reserves exactly that much at the bottom, and the WhatsApp float is
@@ -398,7 +423,7 @@ html.motion-ready.hero-intro-started .mx-chip{
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    border-radius:40px;
+    border-radius:var(--chip-radius);
     background:var(--brand-deep);
     color:#fff;
     font-weight:900;
@@ -416,11 +441,11 @@ html.motion-ready.hero-intro-started .mx-chip{
     align-items:center;
     gap:8px;
     padding:0 16px;
-    border-radius:40px;
+    border-radius:var(--chip-radius);
     background:rgba(255,255,255,.92);
     border:var(--panel-border) solid var(--panel-line);
     box-shadow:var(--panel-glow);
-    color:var(--forest);
+    color:var(--navy);
     font-family:'Rubik',sans-serif;
     font-weight:700;
     font-size:1rem;
@@ -434,38 +459,71 @@ html.motion-ready.hero-intro-started .mx-chip{
     stroke-linecap:round;stroke-linejoin:round;
   }
   .mx-bar-cta:focus-visible,.mx-bar-tel:focus-visible{
-    outline:3px solid var(--terracotta);outline-offset:3px;
+    outline:3px solid var(--brand);outline-offset:3px;
   }
 
-  /* The float clears the bar instead of sitting on top of it. */
+  /* THE FLOAT, off the cards and further into the gutter.
+     It used to be a 54px disc at 24px from the edge, which put it at x 24 to 78
+     on a 412px screen, and the content column starts at exactly x 24. So it did
+     not float NEAR the cards, it sat ON them, punching a green hole through the
+     corner of whichever card was at the bottom of the screen. Measured on a
+     sweep down the whole page: something was under it at 36 of 43 scroll stops.
+
+     One size step down, 54 to 48, which is still over the 44px minimum target,
+     and 14px further into the gutter. It now hangs half outside the content
+     column instead of sitting inside it, and it clears the card TITLES, whose
+     ink starts around x 103, by about 45px.
+
+     `left` and not a logical property on purpose: the base rule in index.html
+     positions this float with `left`, and on this RTL page left IS the
+     inline-end side. One convention, stated, beats two that disagree.
+
+     It still clears the sticky bar: the bar's top edge measures y 842 and the
+     float's bottom edge y 827. */
   .whatsapp-float{
     bottom:calc(var(--bar-h) + 16px + env(safe-area-inset-bottom, 0px));
-    width:54px;height:54px;font-size:1.45rem;
+    left:10px;
+    width:48px;height:48px;font-size:1.3rem;
   }
 
-  /* THE PHONE'S OWN FLOAT FIELD, per B1: FEWER icons, at B1's phone sizes.
-     Icons 4 and 6, the far band, drop out exactly as its table says, so five
-     remain and the 3px blur never runs on a phone at all.
+  /* THE PHONE'S OWN FLOAT FIELD: FOUR icons, in the two bands the glass panel
+     leaves clear.
 
-     The placement is this page's: the text column runs nearly edge to edge
-     here, so two discs go above the panel, two tuck against the glass edges
-     at mid height where the panel's own blur takes them, and one sits below.
-     Timings, amplitudes, delays and blurs are untouched. */
+     WHAT WAS WRONG. B1's table drops the far band on a phone, which left five
+     discs. But the placement put three of them ON the glass panel: measured at
+     412 by 915 the panel occupies x 24 to 388 and y 155 to 551, and discs 7, 2
+     and 5 all had rectangles inside it. A disc behind the panel is not depth,
+     it is a smudge under the headline, and it was doing that over the Hebrew
+     the page is there to deliver.
+
+     WHAT THE PANEL LEAVES. Exactly two clear bands, and they are small:
+       above the panel  y 83 to 155, the hero's own top padding, 72px
+       below the panel  y 551 to 707, minus the shelf the three chips stand on,
+                        which leaves a pocket at x 0 to 68
+     A 52px disc bobbing 15px needs 67px of height, so the upper band holds
+     three discs and no more, and the pocket holds one. That is four. Five do
+     not fit without putting one back on the panel, so the fifth, disc 7, drops
+     here the way discs 4 and 6 already do. Four discs that are all visible beat
+     five where one is a smudge.
+
+     Every placement below clears the panel rectangle at BOTH ends of its bob,
+     not just at rest, and the three in the upper band sit at two different
+     heights and two different sizes so they read as scatter and not as a row.
+     Durations, delays, amplitudes, blurs and B1's phone sizes are untouched. */
   .mx-ico-1{--size:52px;}
   .mx-ico-2{--size:42px;}
   .mx-ico-3{--size:52px;}
   .mx-ico-5{--size:42px;}
-  .mx-ico-7{--size:52px;}
-  .mx-ico-4,.mx-ico-6{display:none;}
+  .mx-ico-4,.mx-ico-6,.mx-ico-7{display:none;}
 
-  .mx-ico-1{inset-inline-start:15%;top:28px;}
-  .mx-ico-3{inset-inline-start:80%;top:24px;}
-  /* These two tuck behind the glass at mid height, where the panel's own
-     blur takes them. Pulled far enough in that the screen edge does not also
-     cut them: half a disc at the viewport edge reads as a bug, not depth. */
-  .mx-ico-7{inset-inline-start:88%;top:40%;}
-  .mx-ico-2{inset-inline-start:10%;top:52%;}
-  .mx-ico-5{inset-inline-start:92%;top:64%;}
+  /* Upper band. Rest tops 84, 84 and 97; bob bottoms 151, 151 and 150; the
+     panel starts at 155. */
+  .mx-ico-3{inset-inline-start:80%;top:27px;}
+  .mx-ico-1{inset-inline-start:15%;top:27px;}
+  .mx-ico-2{inset-inline-start:39%;top:35px;}
+  /* The pocket below the panel, inline-end of the chip shelf. Rest top 580,
+     bob bottom 633, the chips begin at x 68 and this disc ends at x 50. */
+  .mx-ico-5{inset-inline-start:93%;top:83%;}
 
   /* THE PHONE'S OWN CHIPS: three, and on a shelf instead of in gutters.
      There are no side gutters at this width, so the chips move to the deeper
