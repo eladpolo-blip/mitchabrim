@@ -9,15 +9,66 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
+  /* =====================================================================
+     מתחברים : full-volume build.
+     Governing law: motion-kit/docs/DESIGN-LAW.md, preset B.
+
+     DIALS   DESIGN_VARIANCE 8 | MOTION_INTENSITY 8 | VISUAL_DENSITY 9
+
+     ACCENT  ONE family: Elad's brand blue, read from the original file.
+             #1E9FE0 primary, #1580B3 deep, #7DD3FC light, #BEE6FF pale.
+             Reserved for actions, emphasis and the glow device.
+             SECOND family with a written role: WhatsApp green #25D366
+             marks the WhatsApp channel and nothing else on this page.
+
+     DEVICE  The glow-edged panel. One radius, one border weight, one glow
+             decision, on every card, photo and pill the page owns. The
+             five competing card treatments the page shipped before this
+             build are now one.
+
+     IMAGERY Elad's own photography only. Nothing added, nothing replaced.
+
+     TIMING  Two bands, nothing between them.
+               band 1, feedback  .3s ease-out, every hover press and toggle
+               band 2, entrance  .5s, .9s for a large surface, --ease-out
+               continuous loops  2.4s to 30s, ease-in-out to bob, linear to glide
+
+     TYPE    Heebo carries the page at four weights with four jobs:
+               900 display, 700 chrome, 400 body, 300 the thin half of the
+               Hebrew weight pair (DESIGN-LAW 38).
+             Rubik keeps ONE job: Latin strings and digit runs.
+             No letter-spacing on Hebrew anywhere (DESIGN-LAW 37).
+     ===================================================================== */
   :root{
     --cream:#F3F9FF;
     --peach:#BEE6FF;
-    --terracotta:#1E9FE0;
+    --terracotta:#1E9FE0;        /* brand blue, primary. Name kept from the original file. */
+    --brand-deep:#1580B3;        /* brand blue, deep end. Already on the page. */
     --forest:#101A3D;
     --ink:#20263B;
+    --ink-soft:#3d4a63;
     --sage:#7DD3FC;
     --white:#FFFFFF;
-    --shadow: 0 10px 30px rgba(16,26,61,.10);
+    --whatsapp:#25D366;
+
+    /* THE ONE CARD LANGUAGE. One radius, one border weight, one glow. */
+    --panel-radius:18px;
+    --panel-border:1px;
+    --panel-line:rgba(21,128,179,.26);
+    --panel-line-dark:rgba(125,211,252,.30);
+    --panel-glow:0 16px 40px rgba(30,159,224,.16);
+    --panel-glow-lit:0 0 0 1px rgba(30,159,224,.42), 0 20px 48px rgba(30,159,224,.34);
+
+    /* THE TWO TIMING BANDS */
+    --fb:.3s;                    /* band 1: the page's ONE feedback duration */
+    --enter:.5s;                 /* band 2: entrance */
+    --enter-large:.9s;           /* band 2: ceiling, large surfaces only */
+    --ease-out:cubic-bezier(.22,1,.36,1);
+    --step:300ms;                /* hero stagger step. Hero only (DESIGN-LAW 17). */
+
+    /* TWO TYPE SIZES FAR APART, weight extremes in between */
+    --display:4rem;              /* desktop: 4.0x the 1rem body (DESIGN-LAW 29) */
+    --display-sm:3.8rem;         /* phone: 3.8x, re-tuned not shrunk (DESIGN-LAW 30) */
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html{scroll-behavior:smooth;}
@@ -31,37 +82,58 @@
   img{max-width:100%;display:block;}
   ul{list-style:none;}
   .container{max-width:1180px;margin:0 auto;padding:0 24px;}
+
+  /* Rubik's one job: Latin strings and digit runs inside a Hebrew page. */
+  .footer-bottom,
+  footer a[href^="tel:"],
+  footer a[href^="mailto:"],
+  nav a[href="#lifebook"]{font-family:'Rubik',sans-serif;}
+
+  /* Eyebrow: weight carries it, never tracking (DESIGN-LAW 37).
+     Ink rather than accent, because an eyebrow is neither an action nor the
+     one emphasised word (DESIGN-LAW 47). The accent shows up as the bar. */
   .eyebrow{
-    font-family:'Rubik',sans-serif;
-    letter-spacing:.08em;
-    color:var(--terracotta);
-    font-weight:700;
-    font-size:.85rem;
-    display:block;
-    margin-bottom:8px;
-  }
-  h1,h2,h3{font-family:'Heebo',sans-serif;font-weight:700;color:var(--forest);}
-  section{padding:80px 0;}
-  .btn{
-    display:inline-block;
-    background:var(--terracotta);
-    color:#fff;
-    padding:16px 36px;
-    border-radius:40px;
-    font-weight:700;
-    font-size:1rem;
-    box-shadow:var(--shadow);
-    transition:transform .25s ease, background .25s ease;
-    border:none;
-    cursor:pointer;
-  }
-  .btn:hover{transform:translateY(-3px);background:#1580b3;}
-  .btn-outline{
-    background:transparent;
-    border:2px solid var(--forest);
     color:var(--forest);
+    font-weight:900;
+    font-size:.85rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:14px;
   }
-  .btn-outline:hover{background:var(--forest);color:#fff;}
+  .eyebrow::before{
+    content:"";width:26px;height:3px;border-radius:3px;flex:0 0 auto;
+    background:linear-gradient(to left,var(--brand-deep),var(--terracotta));
+    box-shadow:0 0 12px rgba(30,159,224,.55);
+  }
+  .story .eyebrow{justify-content:flex-start;}
+
+  h1,h2,h3{font-family:'Heebo',sans-serif;font-weight:900;color:var(--forest);}
+  section{padding:80px 0;}
+
+  /* THE ACTION. White on #1580B3 at 19.2px/900 is WCAG "large text" and
+     clears the 3:1 bar at 4.16:1; white on the lighter #1E9FE0 does not,
+     which is why the deep end of the family carries the button. */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-height:54px;
+    background:var(--brand-deep);
+    color:#fff;
+    padding:14px 34px;
+    border-radius:40px;
+    font-family:'Heebo',sans-serif;
+    font-weight:900;
+    font-size:1.2rem;
+    line-height:1.2;
+    border:var(--panel-border) solid rgba(255,255,255,.24);
+    box-shadow:var(--panel-glow);
+    cursor:pointer;
+    touch-action:manipulation;
+    transition:transform var(--fb) ease-out, box-shadow var(--fb) ease-out;
+  }
+  .btn:hover{transform:translateY(-3px);box-shadow:var(--panel-glow-lit);}
+  .btn:focus-visible{outline:3px solid var(--terracotta);outline-offset:3px;}
 
   /* HEADER */
   header{
@@ -74,12 +146,21 @@
     display:flex;align-items:center;justify-content:space-between;
     padding:14px 24px;max-width:1180px;margin:0 auto;
   }
-  .logo img{height:52px;}
+  .logo img{height:52px;border-radius:12px;}
   nav ul{display:flex;gap:30px;align-items:center;}
-  nav a{font-weight:500;font-size:.98rem;position:relative;padding:6px 0;}
-  nav a:hover{color:var(--terracotta);}
-  .header-contact{display:flex;gap:18px;align-items:center;font-size:.9rem;}
-  .header-contact a{display:flex;align-items:center;gap:6px;color:var(--forest);font-weight:500;}
+  /* Chrome weight is 700. The hover feedback is the accent underline growing
+     from the inline-start edge, on the page's one feedback duration. */
+  nav a{font-weight:700;font-size:1rem;position:relative;padding:6px 0;}
+  nav a::after{
+    content:"";position:absolute;inset-inline-start:0;bottom:0;height:2px;width:100%;
+    background:var(--terracotta);border-radius:2px;
+    transform:scaleX(0);transform-origin:left center;
+    transition:transform var(--fb) ease-out;
+  }
+  /* Mirrored explicitly: the underline grows from the inline-start edge,
+     which is the right edge in RTL (DESIGN-LAW 42). */
+  [dir="rtl"] nav a::after{transform-origin:right center;}
+  nav a:hover::after,nav a:focus-visible::after{transform:scaleX(1);}
   .menu-toggle{
     display:none;background:none;border:none;color:var(--forest);cursor:pointer;
     width:48px;height:48px;align-items:center;justify-content:center;flex-direction:column;gap:5px;
@@ -93,7 +174,8 @@
     .nav-wrap > .btn{flex:0 0 auto;white-space:nowrap;}
     header nav{
       display:none;position:absolute;top:100%;right:0;left:0;width:100%;
-      background:var(--cream);border-bottom:1px solid rgba(16,26,61,.12);box-shadow:var(--shadow);
+      background:var(--cream);border-bottom:var(--panel-border) solid var(--panel-line);
+      box-shadow:var(--panel-glow);
     }
     header nav.is-open{display:block;}
     header nav ul{display:block;}
@@ -109,207 +191,265 @@
   /* HERO */
   .hero{
     position:relative;
-    padding:100px 0 80px;
+    padding:100px 0 96px;
     text-align:center;
-    overflow:hidden;
+    overflow:hidden;              /* clips the float field and the tucked chip */
     background:var(--cream);
   }
   .hero-bg{position:absolute;inset:0;z-index:0;}
   .hero-slide{
-    position:absolute;inset:0;opacity:0;transform:scale(1);
-    transition:opacity 1.4s cubic-bezier(.4,0,.2,1);
+    position:absolute;inset:0;opacity:0;
+    transition:opacity 1.4s cubic-bezier(.4,0,.2,1);   /* the page's own crossfade, kept */
   }
   .hero-slide.is-active{opacity:1;}
-  html.hero-rotation-ready .hero-slide.is-active,
-  html.hero-rotation-ready .hero-slide.is-leaving{animation:hero-photo-zoom 8s ease-out both;}
-  @keyframes hero-photo-zoom{
-    from{transform:scale(1.015);}
-    to{transform:scale(1.085);}
-  }
   .hero-slide img{width:100%;height:100%;object-fit:cover;display:block;}
+
+  /* AMBIENT DRIFT. The photo is scaled 1.12 and its centre walks a small
+     circle over 30s, linear, forever. The second rotate is the counter-turn
+     that keeps the picture upright: rotate out, step off-centre, rotate back.
+     Only transform moves, so it costs nothing and shifts no layout. */
+  html.hero-rotation-ready .hero-slide img{
+    animation:hero-ambient-drift 30s linear infinite;
+  }
+  @keyframes hero-ambient-drift{
+    from{transform:scale(1.12) rotate(0deg) translateX(13px) rotate(0deg);}
+    to{transform:scale(1.12) rotate(360deg) translateX(13px) rotate(-360deg);}
+  }
+
   .hero .container{position:relative;z-index:2;}
+
+  /* THE DEVICE, first appearance: a light glass panel with a brand glow edge.
+     It is doing a real job here, holding Hebrew text legible over a photo
+     that changes every 5.5 seconds. */
   .hero-panel{
     position:relative;
     isolation:isolate;
     max-width:780px;
     margin:0 auto;
-    padding:46px 54px;
+    padding:42px 48px 46px;
+    border-radius:calc(var(--panel-radius) + 10px);
+    border:var(--panel-border) solid rgba(255,255,255,.62);
+    /* Real glass, not fog. The tint is light enough that the photograph
+       reads through it as colour and shape; the heavy blur is what makes
+       Hebrew legible on top of six different photographs. The original
+       radial haze that used to do this job is gone: two overlapping washes
+       left a visible seam across the picture. */
+    background:rgba(243,249,255,.52);
+    -webkit-backdrop-filter:blur(22px) saturate(125%);
+    backdrop-filter:blur(22px) saturate(125%);
+    box-shadow:var(--panel-glow-lit);
   }
-  .hero-panel::before{
-    content:"";
-    position:absolute;
-    z-index:-1;
-    inset:-22px -36px;
-    background:radial-gradient(ellipse at center, rgba(243,249,255,.84) 0%, rgba(243,249,255,.74) 36%, rgba(243,249,255,.46) 58%, rgba(243,249,255,.12) 74%, rgba(243,249,255,0) 88%);
-    filter:blur(5px);
-    pointer-events:none;
+  .brand-label{
+    font-size:.92rem;letter-spacing:normal;color:var(--forest);font-weight:900;
+    margin-bottom:14px;
   }
-  .brand-label{font-size:.92rem;letter-spacing:normal;color:#101A3D;font-weight:700;margin-bottom:12px;}
   .hero-hairline{
-    display:block;width:72px;height:1px;margin:0 auto 18px;background:#1E9FE0;
+    display:block;width:96px;height:3px;border-radius:3px;margin:0 auto 22px;
+    background:linear-gradient(to left,var(--brand-deep),var(--terracotta),var(--sage));
+    box-shadow:0 0 16px rgba(30,159,224,.65);
     transform-origin:center;
   }
-  .hero h2{
-    font-size:2.18rem;margin:0 0 24px;line-height:1.4;color:#101A3D;font-weight:500;
-    text-wrap:balance;text-shadow:0 1px 10px rgba(243,249,255,.98), 0 0 3px rgba(243,249,255,1);
-  }
+
+  /* THE HEBREW WEIGHT PAIR (DESIGN-LAW 38). Line one is the display: Heebo
+     900 at 4x the body. Lines two and three are the same face at 300, far
+     smaller. Two sizes far apart, and the extremes of the family between
+     them. Nothing on this page sits in the middle. */
+  .hero h2{margin:0 0 30px;color:var(--forest);text-wrap:balance;}
   .hero-line{display:block;}
+  .hero-line:first-of-type{
+    font-size:var(--display);font-weight:900;line-height:1.06;
+    margin-bottom:16px;
+    text-shadow:0 2px 18px rgba(243,249,255,.9);
+  }
+  /* The thin half of the pair stays ink, not a softer grey. Weight is already
+     doing the contrast work; a pale grey would also have to fight a busy
+     photograph behind the glass, and the people reading this page are the
+     last people to give thin pale type to. */
+  .hero-line:not(:first-of-type){
+    font-size:1.5rem;font-weight:300;line-height:1.45;color:var(--forest);
+    text-shadow:0 1px 12px rgba(243,249,255,.85);
+  }
   .hero-nowrap{white-space:nowrap;}
   .hero-link{
     min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:9px;
-    color:#101A3D;font-weight:700;touch-action:manipulation;
+    color:var(--forest);font-weight:900;font-size:1.2rem;touch-action:manipulation;
+    transition:transform var(--fb) ease-out;
   }
-  .hero-link-text{line-height:1.35;padding-bottom:2px;border-bottom:2px solid #1E9FE0;}
+  .hero-link:hover{transform:translateY(-2px);}
+  .hero-link-text{
+    line-height:1.35;padding-bottom:3px;
+    border-bottom:3px solid var(--terracotta);
+  }
   .hero-chevron{
-    width:9px;height:9px;border-left:2px solid #1E9FE0;border-bottom:2px solid #1E9FE0;
+    width:10px;height:10px;border-left:3px solid var(--terracotta);border-bottom:3px solid var(--terracotta);
     transform:rotate(45deg);flex:0 0 auto;
   }
-  .hero-link:focus-visible{outline:3px solid #1E9FE0;outline-offset:4px;border-radius:3px;}
+  .hero-link:focus-visible{outline:3px solid var(--terracotta);outline-offset:4px;border-radius:3px;}
+
   @media(max-width:640px){
-    .hero{padding:80px 0 60px;}
-    .hero-panel{padding:34px 12px;max-width:100%;}
-    .hero-panel::before{inset:-24px -6px;background:radial-gradient(ellipse at center, rgba(243,249,255,.84) 0%, rgba(243,249,255,.74) 40%, rgba(243,249,255,.46) 62%, rgba(243,249,255,.12) 78%, rgba(243,249,255,0) 92%);}
-    .brand-label{font-size:.82rem;}
-    .hero-hairline{width:58px;margin-bottom:16px;}
-    .hero h2{font-size:1.48rem;line-height:1.42;margin-bottom:20px;}
+    /* The phone gets its own decision, not a narrower copy (DESIGN-LAW 55):
+       a tighter panel inset, a re-tuned 3.8x ratio, and the float field
+       pulled out to the corners so the text column stays clear. */
+    /* The bottom padding is deeper than the desktop's on purpose: it is the
+       shelf the proof chips stand on, under the panel and still over the
+       photograph. The desktop has no such shelf; it has side gutters. */
+    .hero{padding:72px 0 156px;}
+    .hero-panel{padding:30px 16px 34px;max-width:100%;}
+    .brand-label{font-size:.85rem;}
+    .hero-hairline{width:72px;margin-bottom:18px;}
+    .hero h2{margin-bottom:24px;}
+    .hero-line:first-of-type{font-size:var(--display-sm);line-height:1.02;margin-bottom:14px;}
+    .hero-line:not(:first-of-type){font-size:1.15rem;line-height:1.5;}
   }
 
-  /* WORKSHOPS */
-  .section-title{text-align:center;margin-bottom:50px;}
-  .section-title h2{font-size:2.2rem;}
+  /* =====================================================================
+     THE ONE CARD LANGUAGE.
+     Before this build the page ran five competing card treatments. There is
+     now one: radius 18, a 1px brand hairline, and the brand glow. The glow
+     is the device, not a grey drop shadow, and it brightens on hover, so
+     the edge is carrying state rather than decorating twice (VIS-04).
+     ===================================================================== */
+  .card,
+  .lecture-card,
+  .testimonial,
+  .facilitator-card,
+  .why-item,
+  .story img,
+  .lifebook-images img,
+  .footer-img{
+    border-radius:var(--panel-radius);
+    border:var(--panel-border) solid var(--panel-line);
+    box-shadow:var(--panel-glow);
+    background:var(--white);
+  }
+  .why-item{
+    background:rgba(255,255,255,.06);
+    border-color:var(--panel-line-dark);
+    box-shadow:0 16px 44px rgba(30,159,224,.22);
+  }
+  .card,
+  .lecture-card,
+  .testimonial,
+  .facilitator-card,
+  .why-item{
+    transition:transform var(--fb) ease-out, box-shadow var(--fb) ease-out;
+  }
+  @media(hover:hover){
+    .card:hover,
+    .lecture-card:hover,
+    .testimonial:hover,
+    .facilitator-card:hover,
+    .why-item:hover{transform:translateY(-6px);box-shadow:var(--panel-glow-lit);}
+  }
+
+  /* SECTION TITLE. The display size, 4x the body, nothing between. */
+  .section-title{text-align:center;margin-bottom:56px;}
+  .section-title h2{font-size:var(--display);font-weight:900;line-height:1.06;text-wrap:balance;}
   .cards{
     display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:26px;
   }
-  .card{
-    background:var(--white);
-    border-radius:18px;
-    overflow:hidden;
-    box-shadow:var(--shadow);
-    text-align:center;
-    transition:transform .3s ease;
-  }
+  .card{overflow:hidden;text-align:center;}
   .card-img{width:100%;height:170px;object-fit:cover;}
   .card-body{padding:26px 22px 30px;}
-  .card:hover{transform:translateY(-6px);}
-  .card h3{font-size:1.15rem;margin-bottom:18px;min-height:52px;}
-  .card a.more{color:var(--terracotta);font-weight:700;font-size:.9rem;}
-  .card a.more:hover{text-decoration:underline;}
+  .card h3{font-size:1.15rem;font-weight:900;margin-bottom:18px;min-height:52px;}
 
   /* STORY */
   .story{
     display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
   }
   @media(max-width:800px){.story{grid-template-columns:1fr;}}
-  .story img{border-radius:24px;box-shadow:var(--shadow);}
-  .story h2{font-size:2rem;margin-bottom:20px;}
-  .story p{font-size:1.02rem;color:#3d4a63;}
-  #about .story img{max-width:360px;width:100%;display:block;margin:0 auto;border-radius:12px;}
+  .story h2{font-size:var(--display);line-height:1.06;margin-bottom:24px;}
+  .story p{font-size:1.02rem;color:var(--ink-soft);}
+  #about .story img{max-width:360px;width:100%;display:block;margin:0 auto;}
 
-  /* WHY US */
+  /* WHY US. Black used as material, not as a background colour (DESIGN-LAW 49). */
   .why-bg{background:var(--forest);color:#fff;}
   .why-bg .section-title h2{color:#fff;}
+  .why-bg .eyebrow{color:#fff;}
   .why-grid{
     display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:30px;
   }
   .why-item{
-    background:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.12);
-    border-radius:18px;
-    padding:30px;
+    padding:34px 30px;
     text-align:center;
   }
   .why-icon{width:52px;height:52px;margin:0 auto 18px;display:block;}
-  .why-icon svg{width:100%;height:100%;stroke:#7DD3FC;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
-  .why-item h3{color:#fff;font-size:1.1rem;margin-bottom:8px;}
-  .why-item p{color:#d8ddd4;font-size:.92rem;}
+  .why-icon svg{
+    width:100%;height:100%;stroke:var(--sage);fill:none;stroke-width:1.6;
+    stroke-linecap:round;stroke-linejoin:round;
+    filter:drop-shadow(0 0 8px rgba(125,211,252,.55));
+  }
+  .why-item h3{color:#fff;font-size:1.1rem;font-weight:900;margin-bottom:8px;}
 
-  /* GALLERY */
-  .gallery-intro{text-align:center;max-width:760px;margin:0 auto 46px;}
-  .gallery-intro h2{font-size:1.7rem;line-height:1.5;}
-  .gallery-quote{
-    text-align:center;font-size:1.5rem;font-weight:700;color:var(--forest);
-    max-width:700px;margin:0 auto 46px;
-  }
-  .gallery-grid{
-    display:grid;grid-template-columns:repeat(4,1fr);gap:14px;
-  }
-  .gallery-grid img{border-radius:14px;aspect-ratio:1/1;object-fit:cover;box-shadow:var(--shadow);}
-  @media(max-width:700px){.gallery-grid{grid-template-columns:repeat(2,1fr);}}
-  .gallery-outro{
-    text-align:center;font-size:1.4rem;font-weight:700;color:var(--forest);
-    max-width:760px;margin:46px auto 0;
-  }
-  .cta-row{display:flex;gap:18px;justify-content:center;margin-top:30px;flex-wrap:wrap;}
-  .btn-whatsapp{background:#25D366;}
-  .btn-whatsapp:hover{background:#1ebe59;}
-
-  /* STATS */
-  .stats{
-    display:grid;grid-template-columns:repeat(3,1fr);gap:20px;text-align:center;
-  }
-  @media(max-width:640px){.stats{grid-template-columns:1fr;}}
-  .stat-num{font-size:3rem;font-weight:900;color:var(--terracotta);}
-  .stat-label{font-family:'Rubik',sans-serif;letter-spacing:.05em;color:var(--forest);font-weight:500;}
+  .cta-row{display:flex;gap:18px;justify-content:center;margin-top:40px;flex-wrap:wrap;}
 
   /* TESTIMONIALS */
   .testimonials{
     display:grid;grid-template-columns:1fr 1fr;gap:30px;
   }
   @media(max-width:800px){.testimonials{grid-template-columns:1fr;}}
-  .testimonial{
-    background:var(--white);border-radius:18px;padding:34px;box-shadow:var(--shadow);
-  }
-  .testimonial p{font-style:italic;color:#3d4a63;margin-bottom:18px;}
-  .testimonial .name{font-weight:700;color:var(--terracotta);}
+  .testimonial{padding:34px;}
+  .testimonial p{font-style:italic;color:var(--ink-soft);margin-bottom:18px;}
+  /* Ink at 900, not accent: #1E9FE0 on white is 2.96:1 and fails AA at this
+     size, and a name is neither an action nor the emphasised word. */
+  .testimonial .name{font-weight:900;color:var(--forest);}
 
-  /* CONTACT */
+  /* CONTACT. The same panel language at a larger radius, on the pale end of
+     the one accent family. */
   .contact-bg{
     background:linear-gradient(135deg,#BEE6FF 0%,#DFF3FF 100%);
-    border-radius:32px;
-    padding:60px 40px;
+    border-radius:calc(var(--panel-radius) + 14px);
+    border:var(--panel-border) solid var(--panel-line);
+    box-shadow:var(--panel-glow);
+    padding:64px 40px;
     text-align:center;
   }
-  .contact-bg h2{font-size:2rem;margin-bottom:10px;}
-  .contact-bg p{margin-bottom:30px;color:#33507a;}
+  .contact-bg h2{font-size:var(--display);line-height:1.06;margin-bottom:14px;text-wrap:balance;}
+  .contact-bg p{margin-bottom:34px;color:#33507a;font-size:1.1rem;}
   form.contact-form{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:16px;}
   form.contact-form input, form.contact-form textarea{
-    padding:14px 18px;border-radius:12px;border:none;font-family:inherit;font-size:1rem;
+    padding:15px 18px;border-radius:12px;font-family:inherit;font-size:1rem;
+    border:var(--panel-border) solid rgba(21,128,179,.22);
+    background:var(--white);color:var(--ink);
+    transition:box-shadow var(--fb) ease-out, border-color var(--fb) ease-out;
+  }
+  form.contact-form input:focus, form.contact-form textarea:focus{
+    outline:none;border-color:var(--terracotta);
+    box-shadow:0 0 0 3px rgba(30,159,224,.30);
   }
   form.contact-form input[type="tel"]{text-align:right;}
-  .checkbox-row{display:flex;align-items:center;gap:8px;justify-content:center;font-size:.9rem;}
+  .checkbox-row{display:flex;align-items:center;gap:8px;justify-content:center;font-size:.95rem;}
 
-  /* FOOTER */
-  footer{background:var(--forest);color:#d8ddd4;padding:60px 0 30px;}
+  /* FOOTER. Tints of white instead of the two stray warm greys the original
+     carried, so the palette stays at three neutrals plus the one accent. */
+  footer{background:var(--forest);color:rgba(255,255,255,.80);padding:60px 0 30px;}
   .footer-top{
     display:flex;justify-content:space-between;flex-wrap:wrap;gap:30px;margin-bottom:40px;
   }
-  footer a:hover{color:#fff;}
+  footer a{transition:color var(--fb) ease-out;}
+  footer a:hover{color:var(--sage);}
   .footer-links{display:flex;gap:24px;flex-wrap:wrap;}
-  .footer-img{border-radius:18px;overflow:hidden;flex:0 1 520px;max-width:520px;}
+  .footer-img{overflow:hidden;flex:0 1 520px;max-width:520px;border-color:var(--panel-line-dark);}
   .footer-img img{width:100%;height:auto;}
   .footer-bottom{
-    border-top:1px solid rgba(255,255,255,.12);padding-top:24px;text-align:center;font-size:.85rem;color:#9aa294;
+    border-top:1px solid rgba(255,255,255,.12);padding-top:24px;text-align:center;
+    font-size:.85rem;color:rgba(255,255,255,.55);
   }
 
-  .workshop-detail{
-    max-width:820px;margin:0 auto 60px;padding-top:36px;border-top:1px solid rgba(16,26,61,.08);
+  /* FACILITATOR */
+  .facilitator-card{padding:36px 32px;text-align:center;}
+  .facilitator-photo{
+    width:130px;height:130px;border-radius:50%;object-fit:cover;margin:0 auto 18px;
+    border:3px solid var(--white);
+    box-shadow:var(--panel-glow-lit);
   }
-  .workshop-detail:first-child{padding-top:0;border-top:none;}
-  .workshop-detail p{color:#3d4a63;margin-bottom:16px;line-height:1.75;}
-  .workshop-detail .btn{margin-top:10px;}
-
-  /* FACILITATORS */
-  .facilitator-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:30px;}
-  .facilitator-card{background:var(--white);border-radius:18px;padding:32px;box-shadow:var(--shadow);text-align:center;}
-  .facilitator-photo{width:130px;height:130px;border-radius:50%;object-fit:cover;margin:0 auto 18px;box-shadow:var(--shadow);}
-  .facilitator-card h3{margin-bottom:12px;}
-  .facilitator-card p{color:#3d4a63;line-height:1.7;margin-bottom:10px;text-align:right;}
+  .facilitator-card h3{margin-bottom:12px;font-size:1.45rem;}
+  .facilitator-card p{color:var(--ink-soft);line-height:1.7;margin-bottom:10px;text-align:right;}
 
   /* LECTURES */
-  .lecture-card{background:var(--white);border-radius:18px;padding:30px;box-shadow:var(--shadow);}
-  .lecture-card h3{font-size:1.1rem;margin-bottom:12px;}
-  .lecture-card p{color:#3d4a63;font-size:.95rem;margin-bottom:14px;}
-  .lecture-price{font-weight:700;color:var(--terracotta);}
+  .lecture-card{padding:32px 30px;}
+  .lecture-card h3{font-size:1.15rem;font-weight:900;margin-bottom:12px;}
+  .lecture-card p{color:var(--ink-soft);font-size:.98rem;margin-bottom:0;}
   @media(min-width:1024px){
     #lectures .cards{grid-template-columns:repeat(6,1fr);}
     #lectures .lecture-card{grid-column:span 2;}
@@ -336,72 +476,154 @@
       grid-template-columns:minmax(0,3fr) minmax(0,4fr) minmax(0,3fr);gap:40px;
     }
   }
-  .lifebook-images img{border-radius:18px;box-shadow:var(--shadow);}
-  .lifebook-text p{color:#3d4a63;margin-bottom:16px;line-height:1.75;}
-  .lifebook-price{display:inline-block;background:var(--terracotta);color:#fff;padding:6px 16px;border-radius:20px;font-weight:700;font-size:.9rem;margin-bottom:18px;}
+  .lifebook-text p{color:var(--ink-soft);margin-bottom:16px;line-height:1.75;}
+  /* The price pill runs on ink, not on the light accent: white on #1E9FE0 is
+     2.96:1 and fails at this size. It keeps the accent as its glow edge. */
+  .lifebook-price{
+    display:inline-block;background:var(--forest);color:#fff;
+    padding:8px 18px;border-radius:24px;font-weight:900;font-size:.95rem;margin-bottom:20px;
+    border:var(--panel-border) solid var(--panel-line-dark);
+    box-shadow:var(--panel-glow);
+  }
   #lifebook h2 img{max-width:420px;width:100%;display:block;margin:0 auto;border-radius:12px;}
   @media(max-width:640px){#lifebook h2 img{max-width:80%;}}
 
-  /* MOTION */
+  /* =====================================================================
+     MOTION.  Band 1 is .3s. Band 2 is .5s, .9s on a large surface.
+     Loops run 2.4s to 30s. There is nothing in between the bands.
+     ===================================================================== */
+
+  /* The highlight pill. Ink to deep brand, because white on the light end of
+     the family measures 2.96:1 and misses even the large-text bar. The
+     accent comes back as the glow ring around the pill. */
   .heading-highlight{
     position:relative;display:inline-block;z-index:0;color:#fff;
-    line-height:1.25;padding:.06em .32em .12em;margin:0 .04em;border-radius:.34em;
+    line-height:1.2;padding:.04em .28em .1em;margin:0 .04em;border-radius:.28em;
   }
   .heading-highlight::before{
     content:"";position:absolute;z-index:-1;inset:0;border-radius:inherit;
-    background:linear-gradient(135deg,#1580B3 0%,#1E9FE0 100%);box-shadow:0 8px 20px rgba(21,128,179,.28);
+    background:linear-gradient(135deg,#101A3D 0%,#1580B3 100%);
+    box-shadow:0 0 0 1px rgba(30,159,224,.55), 0 12px 30px rgba(30,159,224,.38);
     transform:scaleX(1);transform-origin:right center;
   }
-  html.motion-ready .reveal-item{
-    opacity:0;transform:translateY(24px);filter:blur(4px);
-    transition:opacity 1s cubic-bezier(.22,1,.36,1) var(--reveal-delay,0ms), transform 1s cubic-bezier(.22,1,.36,1) var(--reveal-delay,0ms), filter 1s cubic-bezier(.22,1,.36,1) var(--reveal-delay,0ms);
-    will-change:opacity,transform,filter;
+  /* One deliberate inversion: on the navy band the pill goes pale and the
+     text goes ink, which is the only way it reads against its own ground. */
+  .why-bg .heading-highlight{color:var(--forest);}
+  .why-bg .heading-highlight::before{
+    background:linear-gradient(135deg,#BEE6FF 0%,#7DD3FC 100%);
+    box-shadow:0 0 0 1px rgba(125,211,252,.7), 0 12px 30px rgba(125,211,252,.35);
   }
-  html.motion-ready .reveal-item.is-revealed{opacity:1;transform:translateY(0);filter:blur(0);will-change:auto;}
+
+  /* ENTRANCE. .5s, 28px, opacity and transform only, no layout shift.
+     No per-item delay below the fold: grids arrive together (DESIGN-LAW 17). */
+  html.motion-ready .reveal-item{
+    opacity:0;transform:translateY(28px);
+    transition:opacity var(--enter) var(--ease-out), transform var(--enter) var(--ease-out);
+  }
+  html.motion-ready .reveal-item.is-revealed{opacity:1;transform:translateY(0);}
+
+  /* Before the pill sweeps in the word must still be readable on bare ground:
+     ink on the light sections, white on the navy band. It flips as the pill
+     arrives under it. */
   html.motion-ready .heading-highlight{color:var(--forest);}
   html.motion-ready .why-bg .heading-highlight{color:#fff;}
   html.motion-ready .heading-highlight::before{transform:scaleX(0);}
   html.motion-ready .reveal-item.is-revealed .heading-highlight{
-    color:#fff;transition:color .35s ease calc(var(--reveal-delay,0ms) + 640ms);
+    color:#fff;transition:color var(--fb) ease-out 420ms;
+  }
+  html.motion-ready .why-bg .reveal-item.is-revealed .heading-highlight{
+    color:var(--forest);transition:color var(--fb) ease-out 420ms;
   }
   html.motion-ready .reveal-item.is-revealed .heading-highlight::before{
-    transform:scaleX(1);transition:transform .65s cubic-bezier(.22,1,.36,1) calc(var(--reveal-delay,0ms) + 475ms);
+    transform:scaleX(1);transition:transform var(--enter) var(--ease-out) 260ms;
   }
+
+  /* THE HERO LADDER. 300ms per element, hero lockup only. Six rungs:
+     label, hairline, headline line 1, line 2, line 3, then the action.
+     The panel itself is the large surface and takes the .9s ceiling. */
+  html.motion-ready .hero-panel{opacity:0;}
   html.motion-ready .hero-panel .brand-label,
-  html.motion-ready .hero-panel .hero-hairline,
-  html.motion-ready .hero-panel .hero-word,
-  html.motion-ready .hero-panel .hero-link{
-    opacity:0;filter:blur(4px);transform:translateY(11px);
+  html.motion-ready .hero-panel .hero-line,
+  html.motion-ready .hero-panel .hero-link{opacity:0;transform:translateY(28px);}
+  html.motion-ready .hero-panel .hero-hairline{opacity:0;transform:scaleX(0);}
+
+  html.motion-ready.hero-intro-started .hero-panel{
+    opacity:1;transition:opacity var(--enter-large) var(--ease-out);
   }
-  html.motion-ready .hero-panel .hero-hairline{transform:scaleX(0);filter:none;}
-  html.motion-ready .hero-panel .hero-word{display:inline-block;}
-  html.motion-ready.hero-intro-started .hero-panel .brand-label{opacity:1;filter:blur(0);transform:translateY(0);transition:opacity .625s ease-out .1s, filter .625s ease-out .1s, transform .625s ease-out .1s;}
-  html.motion-ready.hero-intro-started .hero-panel .hero-hairline{opacity:1;transform:scaleX(1);transition:opacity .625s ease-out .35s, transform .725s cubic-bezier(.22,1,.36,1) .35s;}
-  html.motion-ready.hero-intro-started .hero-panel .hero-word{opacity:1;filter:blur(0);transform:translateY(0);transition:opacity .625s ease-out var(--word-delay), filter .625s ease-out var(--word-delay), transform .625s ease-out var(--word-delay);}
-  html.motion-ready.hero-intro-started .hero-panel .hero-link{opacity:1;filter:blur(0);transform:translateY(0);transition:opacity .69s ease-out 2.6s, filter .69s ease-out 2.6s, transform .69s ease-out 2.6s;}
+  html.motion-ready.hero-intro-started .hero-panel .brand-label,
+  html.motion-ready.hero-intro-started .hero-panel .hero-line,
+  html.motion-ready.hero-intro-started .hero-panel .hero-link{
+    opacity:1;transform:translateY(0);
+    transition:opacity var(--enter) var(--ease-out) var(--rung,0ms),
+               transform var(--enter) var(--ease-out) var(--rung,0ms);
+  }
+  html.motion-ready.hero-intro-started .hero-panel .hero-hairline{
+    opacity:1;transform:scaleX(1);
+    transition:opacity var(--enter) var(--ease-out) var(--rung,0ms),
+               transform var(--enter) var(--ease-out) var(--rung,0ms);
+  }
+  .hero-panel .brand-label{--rung:0ms;}
+  .hero-panel .hero-hairline{--rung:var(--step);}
+  .hero-panel .hero-line:first-of-type{--rung:calc(var(--step) * 2);}
+  .hero-panel .hero-line:nth-of-type(2){--rung:calc(var(--step) * 3);}
+  .hero-panel .hero-line:nth-of-type(3){--rung:calc(var(--step) * 4);}
+  .hero-panel .hero-link{--rung:calc(var(--step) * 5);}
+
   @media(hover:hover){
-    html.motion-ready .card.reveal-item.is-revealed:hover{transform:translateY(-6px);}
+    html.motion-ready .card.is-revealed:hover,
+    html.motion-ready .lecture-card.is-revealed:hover,
+    html.motion-ready .testimonial.is-revealed:hover,
+    html.motion-ready .facilitator-card.is-revealed:hover,
+    html.motion-ready .why-item.is-revealed:hover{
+      transform:translateY(-6px);box-shadow:var(--panel-glow-lit);
+    }
   }
+
+  /* REDUCED MOTION: complete, correct and still (DESIGN-LAW 23). */
   @media(prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
-    .btn,.card{transition:none;}
-    .btn:hover,.card:hover{transform:none;}
-    .hero-slide{animation:none;transition:none;transform:none;}
-    html.hero-rotation-ready .hero-slide.is-active,
-    html.hero-rotation-ready .hero-slide.is-leaving{animation:none;transform:none;}
+    .btn,.card,.lecture-card,.testimonial,.facilitator-card,.why-item,
+    .hero-link,nav a::after,footer a{transition:none;}
+    .btn:hover,.card:hover,.lecture-card:hover,.testimonial:hover,
+    .facilitator-card:hover,.why-item:hover,.hero-link:hover{transform:none;}
+    .hero-slide{transition:none;}
+    html.hero-rotation-ready .hero-slide img{animation:none;transform:none;}
+    html.motion-ready .hero-panel,
     html.motion-ready .reveal-item,
     html.motion-ready .hero-panel .brand-label,
     html.motion-ready .hero-panel .hero-hairline,
-    html.motion-ready .hero-panel .hero-word,
-    html.motion-ready .hero-panel .hero-link{opacity:1;transform:none;filter:none;transition:none;}
+    html.motion-ready .hero-panel .hero-line,
+    html.motion-ready .hero-panel .hero-link{opacity:1;transform:none;transition:none;}
     html.motion-ready .heading-highlight::before{transform:scaleX(1);transition:none;}
     html.motion-ready .heading-highlight{color:#fff;transition:none;}
+    html.motion-ready .why-bg .heading-highlight{color:var(--forest);}
   }
 
+  /* THE PHONE'S OWN TYPE DECISION. 3.8x the body rather than the desktop
+     4.0x, re-tuned and not simply scaled down (DESIGN-LAW 30). */
+  @media(max-width:640px){
+    .section-title h2,
+    .story h2,
+    .contact-bg h2{font-size:var(--display-sm);line-height:1.02;}
+    .section-title{margin-bottom:44px;}
+    .contact-bg{padding:48px 20px;border-radius:var(--panel-radius);}
+    .facilitator-card{padding:30px 22px;}
+    .lecture-card{padding:28px 24px;}
+    .testimonial{padding:28px 24px;}
+    .why-item{padding:30px 24px;}
+  }
+
+  /* The second colour family, and its whole written role: WhatsApp. */
   .whatsapp-float{
-    position:fixed;bottom:24px;left:24px;background:#25D366;color:#fff;
+    position:fixed;bottom:24px;left:24px;background:var(--whatsapp);color:#fff;
     width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;
     box-shadow:0 8px 24px rgba(0,0,0,.25);font-size:1.6rem;z-index:200;
+    transition:transform var(--fb) ease-out;
+  }
+  .whatsapp-float:hover{transform:translateY(-3px);}
+  @media(prefers-reduced-motion: reduce){
+    .whatsapp-float{transition:none;}
+    .whatsapp-float:hover{transform:none;}
   }
 </style>
 <link rel="stylesheet" href="assets/motion-extra.css">
@@ -457,13 +679,60 @@
       <img src="assets/hero/desktop-27.webp" alt="">
     </picture>
   </div>
+
+  <!-- ===================================================================
+       FLOAT FIELD. Seven real DOM icons, one per thing Elad actually runs,
+       and every one of them is named further down this page: music,
+       painting, writing, the digital album, care, movement, growth.
+
+       Numbers come from the B1 extraction,
+       motion-kit/docs/specs/onemanai-hero/spec-float-field.json: seven
+       icons, five on the phone, the near band on the reference's own
+       measured 15px over its measured ease-in-out loop, and the per-icon
+       duration, delay, amplitude, blur and size straight off its table.
+       What this build re-mapped, and why, is written at the top of the
+       float field block in assets/motion-extra.css.
+
+       Icons: Lucide outlines (ISC licence, lucide.dev), pasted inline.
+       No icon font, no CDN, nothing fetched at runtime.
+       =================================================================== -->
+  <div class="mx-field" aria-hidden="true">
+    <span class="mx-ico mx-ico-1"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
+    <span class="mx-ico mx-ico-2"><svg viewBox="0 0 24 24"><path d="m9.06 11.9 8.07-8.06a2.85 2.85 0 1 1 4.03 4.03l-8.06 8.08"/><path d="M7.07 14.94c-1.66 0-3 1.35-3 3.02 0 1.33-2.5 1.52-2 2.02 1.08 1.1 2.49 2.02 4 2.02 2.2 0 4-1.8 4-4.04a3.01 3.01 0 0 0-3-3.02z"/></svg></span>
+    <span class="mx-ico mx-ico-3"><svg viewBox="0 0 24 24"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span>
+    <span class="mx-ico mx-ico-4"><svg viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></span>
+    <span class="mx-ico mx-ico-5"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span>
+    <span class="mx-ico mx-ico-6"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><path d="m9 20 3-6 3 6"/><path d="m6 8 6 2 6-2"/><path d="M12 10v4"/></svg></span>
+    <span class="mx-ico mx-ico-7"><svg viewBox="0 0 24 24"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg></span>
+  </div>
+
+  <!-- PROOF CHIP that tucks BEHIND the glass panel: the z-index interleave.
+       Every word in it is already on this page, in the המלצות section. -->
+  <div class="mx-chips mx-chips-under" aria-hidden="true">
+    <span class="mx-chip mx-chip-1">
+      <span class="mx-chip-quote">זה היה זמן איכות שכלל גם צחוק, קרבה ותחושת סיפוק</span>
+      <span class="mx-chip-name">מרים</span>
+    </span>
+  </div>
+
   <div class="container">
     <div class="hero-panel">
       <div class="brand-label">מתחברים</div>
       <span class="hero-hairline" aria-hidden="true"></span>
-      <h2 aria-label="יחד בכל שלב בחיים, כי בכל גיל יש הזדמנות לצמוח, לרכוש ידע וליהנות מהחיים"><span class="hero-line">יחד בכל שלב בחיים,</span> <span class="hero-line"><span class="hero-nowrap">כי בכל גיל</span> יש הזדמנות לצמוח,</span> <span class="hero-line">לרכוש ידע וליהנות מהחיים</span></h2>
+      <h2 aria-label="יחד בכל שלב בחיים, כי בכל גיל יש הזדמנות לצמוח, לרכוש ידע וליהנות מהחיים"><span class="hero-line"><span class="mx-sweep">יחד</span> בכל שלב בחיים,</span> <span class="hero-line"><span class="hero-nowrap">כי בכל גיל</span> יש הזדמנות לצמוח,</span> <span class="hero-line">לרכוש ידע וליהנות מהחיים</span></h2>
       <a href="#contact" class="hero-link"><span class="hero-link-text">השאירו פרטים</span><span class="hero-chevron" aria-hidden="true"></span></a>
     </div>
+  </div>
+
+  <!-- The three chips that sit in front. Quote and names from המלצות,
+       workshop names from הסדנאות שלנו. Nothing here is invented. -->
+  <div class="mx-chips mx-chips-over" aria-hidden="true">
+    <span class="mx-chip mx-chip-2">
+      <span class="mx-chip-quote">תחושת הביטחון שלי בעולם הטכנולוגי גדלה משמעותית</span>
+      <span class="mx-chip-name">עדנה ושושנה</span>
+    </span>
+    <span class="mx-chip mx-chip-3 mx-chip-tag">סדנאות מוזיקה</span>
+    <span class="mx-chip mx-chip-4 mx-chip-tag">סדנת נשימה</span>
   </div>
 </section>
 
@@ -547,6 +816,8 @@
   </div>
 </section>
 
+<div class="mx-divider" aria-hidden="true"></div>
+
 <section id="lectures">
   <div class="container">
     <div class="section-title">
@@ -577,6 +848,55 @@
     </div>
   </div>
 </section>
+
+<!-- =====================================================================
+     RTL MARQUEE RIBBON. The one full-bleed edge-to-edge break on this page
+     (DESIGN-LAW 52), tilted 2.5 degrees, carrying the nine workshop names
+     exactly as they are written in הסדנאות שלנו below, alternating solid
+     and outline. Period is 30s explicitly, so it is a stated number and not
+     a speed you have to compute (DESIGN-LAW item 80).
+
+     DIRECTION, chosen, declared, and then measured on the built page: the
+     track travels toward the inline-START edge, the right in this RTL page.
+     New words enter at the left and leave at the right. Because the track is
+     laid out right to left, the first name in the list reaches any fixed
+     point before the second, so the band passes in Hebrew reading order.
+     This is the exact mirror of the familiar left-running Latin ticker, and
+     it is set by the sign of the translate rather than inherited from an LTR
+     default (DESIGN-LAW 40, RTL-02). Measured: translateX rises from 134.6
+     to 259.2 over 1.5s at 1440, so it is moving right, not drifting.
+
+     It pauses on hover and it does not run at all under reduced motion, so
+     the reading pace stays with the visitor (MOT-02).
+     ===================================================================== -->
+<div class="mx-ribbon-wrap" aria-hidden="true">
+  <div class="mx-ribbon">
+    <div class="mx-ribbon-track">
+      <span class="mx-ribbon-group">
+        <span class="mx-ribbon-word">סדנא קוגניטיבית למוח</span><span class="mx-ribbon-dot"></span>
+        <span class="mx-ribbon-word is-outline">סדנת משחקים לכיף</span><span class="mx-ribbon-dot"></span>
+        <span class="mx-ribbon-word">סדנת היכרות טכנולוגית</span><span class="mx-ribbon-dot"></span>
+        <span class="mx-ribbon-word is-outline">סדנת בניית אלבום דיגיטלי</span><span class="mx-ribbon-dot"></span>
+        <span class="mx-ribbon-word">סדנת כתיבה - ספרו את הסיפור שלכם</span><span class="mx-ribbon-dot"></span>
+        <span class="mx-ribbon-word is-outline">סדנת צ'י קונג</span><span class="mx-ribbon-dot"></span>
+        <span class="mx-ribbon-word">סדנת נשימה</span><span class="mx-ribbon-dot"></span>
+        <span class="mx-ribbon-word is-outline">סדנאות תנועה</span><span class="mx-ribbon-dot"></span>
+        <span class="mx-ribbon-word">סדנאות מוזיקה</span><span class="mx-ribbon-dot"></span>
+      </span>
+      <span class="mx-ribbon-group">
+        <span class="mx-ribbon-word">סדנא קוגניטיבית למוח</span><span class="mx-ribbon-dot"></span>
+        <span class="mx-ribbon-word is-outline">סדנת משחקים לכיף</span><span class="mx-ribbon-dot"></span>
+        <span class="mx-ribbon-word">סדנת היכרות טכנולוגית</span><span class="mx-ribbon-dot"></span>
+        <span class="mx-ribbon-word is-outline">סדנת בניית אלבום דיגיטלי</span><span class="mx-ribbon-dot"></span>
+        <span class="mx-ribbon-word">סדנת כתיבה - ספרו את הסיפור שלכם</span><span class="mx-ribbon-dot"></span>
+        <span class="mx-ribbon-word is-outline">סדנת צ'י קונג</span><span class="mx-ribbon-dot"></span>
+        <span class="mx-ribbon-word">סדנת נשימה</span><span class="mx-ribbon-dot"></span>
+        <span class="mx-ribbon-word is-outline">סדנאות תנועה</span><span class="mx-ribbon-dot"></span>
+        <span class="mx-ribbon-word">סדנאות מוזיקה</span><span class="mx-ribbon-dot"></span>
+      </span>
+    </div>
+  </div>
+</div>
 
 <section id="workshops">
   <div class="container">
@@ -644,6 +964,8 @@
   </div>
 </section>
 
+<div class="mx-divider" aria-hidden="true"></div>
+
 <section>
   <div class="container">
     <div class="section-title">
@@ -663,10 +985,12 @@
   </div>
 </section>
 
+<div class="mx-divider" aria-hidden="true"></div>
+
 <section id="contact">
   <div class="container">
     <div class="contact-bg">
-      <h2>רוצה <span class="heading-highlight">להצטרף</span> אלינו?</h2>
+      <h2>רוצה <span class="heading-highlight mx-sweep-host">להצטרף</span> אלינו?</h2>
       <p>השאירו פרטים ונחזור אליך בהקדם האפשרי!</p>
       <form class="contact-form" id="leadForm" action="https://formsubmit.co/ajax/eladpolo@gmail.com" method="POST">
         <input type="hidden" name="_subject" value="פנייה חדשה מהאתר - מתחברים">
@@ -742,6 +1066,21 @@
   </div>
 </footer>
 
+<!-- =====================================================================
+     PHONE STICKY GLASS CTA BAR. Phone width only; the desktop gets no fixed
+     bar at all. This is the phone's own decision, not a narrower copy of the
+     desktop (DESIGN-LAW 55). Both actions already exist on the page: the
+     form anchor and Elad's number from the footer. The WhatsApp float is
+     lifted above the bar at this width so the two never collide (RTL-07).
+     ===================================================================== -->
+<div class="mx-bar">
+  <a href="#contact" class="mx-bar-cta">השאירו פרטים</a>
+  <a href="tel:0522-862281" class="mx-bar-tel">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+    <span dir="ltr">052-286-2281</span>
+  </a>
+</div>
+
 <a href="https://wa.me/972522862281" class="whatsapp-float" title="WhatsApp us">💬</a>
 
 <script>
@@ -810,29 +1149,6 @@
       });
     }
 
-    function splitWords(container){
-      Array.prototype.slice.call(container.childNodes).forEach(function(node){
-        if (node.nodeType === Node.TEXT_NODE) {
-          var fragment = document.createDocumentFragment();
-          node.nodeValue.split(/(\s+)/).forEach(function(part){
-            if (!part) return;
-            if (/^\s+$/.test(part)) {
-              fragment.appendChild(document.createTextNode(part));
-            } else {
-              var word = document.createElement('span');
-              word.className = 'hero-word';
-              word.setAttribute('aria-hidden', 'true');
-              word.textContent = part;
-              fragment.appendChild(word);
-            }
-          });
-          node.parentNode.replaceChild(fragment, node);
-        } else if (node.nodeType === Node.ELEMENT_NODE) {
-          splitWords(node);
-        }
-      });
-    }
-
     function reveal(element){
       if (element.classList.contains('is-revealed')) return;
       element.classList.add('is-revealed');
@@ -853,10 +1169,9 @@
 
     if (!heroHeading || reduceMotion || typeof window.IntersectionObserver !== 'function') return;
 
-    splitWords(heroHeading);
-    document.querySelectorAll('.hero-word').forEach(function(word, index){
-      word.style.setProperty('--word-delay', (575 + index * 103) + 'ms');
-    });
+    /* The hero ladder is authored in CSS: six rungs, 300ms apart, hero only.
+       Nothing below the fold carries a per-item delay any more, so grids
+       arrive together instead of trickling down the page (DESIGN-LAW 17). */
 
     addReveal('.section-title > .eyebrow, .section-title > h2');
     addReveal('#about .story > div:first-child, #about .story > div:last-child > .eyebrow, #about .story > div:last-child > h2, #about .story > div:last-child > p');
@@ -864,20 +1179,6 @@
     addReveal('#lifebook .lifebook-images img, #lifebook .lifebook-text');
     addReveal('.gallery-intro, .gallery-quote, .gallery-grid > *, .gallery-outro');
     addReveal('.why-bg .cta-row, #workshops .cards + p, .contact-bg > h2, .contact-bg > p, .contact-form');
-
-    document.querySelectorAll('.why-grid, #lectures .cards, #workshops .cards, .testimonials, .stats').forEach(function(group){
-      var rows = [];
-      Array.prototype.slice.call(group.children).forEach(function(card){
-        var top = Math.round(card.offsetTop);
-        var row = rows.filter(function(item){ return Math.abs(item.top - top) < 4; })[0];
-        if (!row) {
-          row = { top: top, cards: [] };
-          rows.push(row);
-        }
-        card.style.setProperty('--reveal-delay', (row.cards.length * 112) + 'ms');
-        row.cards.push(card);
-      });
-    });
 
     observer = new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
@@ -909,7 +1210,7 @@
     window.addEventListener('unhandledrejection', revealAll, { once:true });
 
     root.classList.add('motion-ready');
-    window.getComputedStyle(heroHeading.querySelector('.hero-word')).opacity;
+    window.getComputedStyle(heroHeading).opacity;
     window.setTimeout(function(){ root.classList.add('hero-intro-started'); }, 50);
   })();
 </script>

@@ -1,125 +1,513 @@
-/* motion-extra.css : extra motion elements (marquee band, glowing card edges, floating shapes).
-   Everything here is added by assets/motion-extra.js. Without JS nothing on the page changes.
-   Only transform and opacity are animated. All class names start with mx-. */
+/* =========================================================================
+   motion-extra.css : the added elements of the full-volume build.
 
-/* 1. Marquee band: slowly moving strip of workshop names, above the workshops section */
-.mx-marquee{
-  position:relative;
+   What lives here: the hero float field, the proof chips, the gradient sweep
+   pill, the glowing dividers, the tilted RTL ribbon, and the phone's sticky
+   glass bar. Everything is REAL AUTHORED DOM in index.html, so nothing is
+   injected at runtime and nothing shifts layout as it arrives. With
+   JavaScript switched off every element here is present, correct and still.
+
+   Law it answers to: motion-kit/docs/DESIGN-LAW.md, preset B (full volume).
+     band 1, feedback   .3s ease-out
+     band 2, entrance   .5s, .9s on a large surface, cubic-bezier(.22,1,.36,1)
+     continuous loops   2.4s to 30s, ease-in-out to bob, linear to glide
+   Nothing in this file sits between the two bands.
+
+   Every class starts with mx-.
+   ========================================================================= */
+
+
+/* =========================================================================
+   1. THE FLOAT FIELD around the hero.
+
+   SOURCE OF THE NUMBERS. Every timing, amplitude, blur, opacity and size
+   below is taken from the B1 extraction at
+   motion-kit/docs/specs/onemanai-hero/spec-float-field.json, not invented
+   here and not read off a screenshot.
+
+     measured and kept exactly
+       loop shape     0% at rest, 50% at the amplitude, 100% back at rest
+       easing         ease-in-out on the loop, never ease-out, never a bounce
+       near amplitude 15px, the reference's own measured travel
+       direction      normal, infinite, fill none
+     from B1's per-icon table, verbatim
+       icon 1 near 2400ms delay 0    amp 15 blur 0
+       icon 2 mid  3600ms delay 620  amp 11 blur 1.5
+       icon 3 near 2800ms delay 1740 amp 15 blur 0
+       icon 4 far  4200ms delay 900  amp 7  blur 3
+       icon 5 mid  3200ms delay 2300 amp 11 blur 1.5
+       icon 6 far  3900ms delay 1180 amp 7  blur 3
+       icon 7 near 3000ms delay 2900 amp 15 blur 0
+       sizes  near 72 mid 56 far 44, and on the phone 52 / 42 / 34
+       phone  drops icons 4 and 6, so five icons, not seven
+
+   WHAT THIS BUILD RE-MAPPED, recorded because B1 marks placement as
+   "redesigned (default, tunable)" and asks for any change to be written down:
+
+     B1 sizes the field box at 45 to 55 percent of the hero and keeps its
+     middle 30 percent clear, because the reference has a cut-out figure
+     standing there. This hero has a centred glass panel instead, and it
+     occupies 57 percent of the width, so a half-width field would drop
+     icons straight onto the Hebrew headline. The field therefore spans the
+     full hero and the keep-out grew to match the panel it is protecting.
+     Two x values and one y value moved into the cleared gutters:
+       icon 2  x 26 -> 16      icon 3  x 72 -> 86, y 20 -> 16
+       icon 6  x 60 -> 6
+     Icon 6 moved because at x 60 it sat squarely behind the glass panel and
+     could not be seen at all: one of the seven was invisible. That was found
+     by looking at the rendered hero, not by a number.
+     Every other coordinate is B1's. No duration, delay, amplitude, blur,
+     opacity or size was touched.
+
+     B1's depth bands also list a scale (1 / .82 / .66) alongside the size
+     table. The two are the same statement: 72 x .82 is 59 and 72 x .66 is
+     47.5, which is the size table. Applying both would shrink twice, so the
+     size carries the depth and the transform stays pure translateY, which
+     is also what B1's own acceptance check demands.
+
+   Each disc is the page's structural device shrunk to icon size: a glass
+   panel with a brand hairline. That is not decoration for its own sake.
+   These icons sit over a photograph that changes every 5.5 seconds, and the
+   glass is what keeps them legible against all six of them.
+
+   The blur is static and never animates, so nothing filters during scroll.
+   B1 flags the far band's 3px blur as the phone performance risk; on this
+   page the phone drops both far-band icons, so that blur never runs there.
+   ========================================================================= */
+.mx-field{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
   overflow:hidden;
-  width:100%;
-  max-width:100%;
-  background:#BEE6FF;
-  padding:18px 0;
-  -webkit-mask-image:linear-gradient(to right, transparent 0, #000 8%, #000 92%, transparent 100%);
-  mask-image:linear-gradient(to right, transparent 0, #000 8%, #000 92%, transparent 100%);
 }
-.mx-marquee-track{
+.mx-ico{
+  position:absolute;
+  width:var(--size);
+  height:var(--size);
+  margin-inline-start:calc(var(--size) / -2);
+  margin-top:calc(var(--size) / -2);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:rgba(243,249,255,.80);
+  border:var(--panel-border) solid var(--panel-line);
+  box-shadow:var(--panel-glow);
+  opacity:var(--op);
+  filter:blur(var(--blur));
+  will-change:transform;
+  animation:mx-bob var(--dur) ease-in-out var(--delay) infinite normal;
+}
+.mx-ico svg{
+  width:calc(var(--size) * .44);
+  height:calc(var(--size) * .44);
+  stroke:var(--brand-deep);
+  fill:none;
+  stroke-width:1.7;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+/* The brand glow, on the three near-band discs and no more. */
+.mx-ico-1,.mx-ico-3,.mx-ico-7{box-shadow:var(--panel-glow-lit);}
+
+/* B1's loop shape exactly: rest, amplitude, rest. The travel is DOWNWARD,
+   the way the reference's own keyframes read, translate(0,0) to
+   translate(0,15px) and back. A two-stop loop that never returns to rest
+   jumps once per iteration; this one cannot. */
+@keyframes mx-bob{
+  0%{transform:translate3d(0,0,0);}
+  50%{transform:translate3d(0,var(--amp),0);}
+  100%{transform:translate3d(0,0,0);}
+}
+
+/* Per disc. Depth band, then B1's row, then the placement.
+   Positions are logical, so the field mirrors with the page. */
+.mx-ico-1{--size:72px;--op:1;   --blur:0px;   --amp:15px;--dur:2400ms;--delay:0ms;    inset-inline-start:8%; top:12%;}
+.mx-ico-2{--size:56px;--op:.9;  --blur:1.5px; --amp:11px;--dur:3600ms;--delay:620ms;  inset-inline-start:16%;top:62%;}
+.mx-ico-3{--size:72px;--op:1;   --blur:0px;   --amp:15px;--dur:2800ms;--delay:1740ms; inset-inline-start:86%;top:16%;}
+.mx-ico-4{--size:44px;--op:.78; --blur:3px;   --amp:7px; --dur:4200ms;--delay:900ms;  inset-inline-start:82%;top:70%;}
+.mx-ico-5{--size:56px;--op:.9;  --blur:1.5px; --amp:11px;--dur:3200ms;--delay:2300ms; inset-inline-start:14%;top:82%;}
+.mx-ico-6{--size:44px;--op:.78; --blur:3px;   --amp:7px; --dur:3900ms;--delay:1180ms; inset-inline-start:6%; top:88%;}
+.mx-ico-7{--size:72px;--op:1;   --blur:0px;   --amp:15px;--dur:3000ms;--delay:2900ms; inset-inline-start:90%;top:40%;}
+
+/* The field fades in as one ambient surface, .9s, the large-surface ceiling.
+   Gated on motion-ready, so with JavaScript off it is simply there. */
+html.motion-ready .mx-field{opacity:0;}
+html.motion-ready.hero-intro-started .mx-field{
+  opacity:1;
+  transition:opacity var(--enter-large) var(--ease-out);
+}
+
+
+/* =========================================================================
+   2. THE PROOF CHIPS.
+
+   Four small message panels laid over and under the hero. Every word in them
+   is already on this page: two quotes and two names lifted verbatim from
+   המלצות, two workshop names lifted verbatim from הסדנאות שלנו.
+
+   They are message-SHAPED but they are not WhatsApp green. Green on this page
+   has exactly one job, the WhatsApp channel, and a decorative chip is not
+   that job. So the chips wear the page's own panel language instead.
+
+   Each is rotated between 1.5 and 3 degrees, each bobs 6px to 8px over 3.5s
+   to 4.5s, and the first one is tucked behind the glass panel: it sits at
+   z-index 1, the hero content sits at 2, so the panel's edge cuts across it.
+   ========================================================================= */
+.mx-chips{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+.mx-chips-under{z-index:1;}
+.mx-chips-over{z-index:3;}
+
+.mx-chip{
+  position:absolute;
+  display:block;
+  max-width:264px;
+  padding:13px 17px;
+  border-radius:16px;
+  background:rgba(255,255,255,.92);
+  border:var(--panel-border) solid var(--panel-line);
+  box-shadow:var(--panel-glow-lit);
+  color:var(--forest);
+  font-size:.9rem;
+  line-height:1.45;
+  text-align:start;
+  transform:rotate(var(--rot));
+  animation:mx-chip-bob var(--dur) ease-in-out var(--delay,0s) infinite alternate;
+}
+@keyframes mx-chip-bob{
+  from{transform:rotate(var(--rot)) translateY(0);}
+  to{transform:rotate(var(--rot)) translateY(calc(var(--amp) * -1));}
+}
+.mx-chip-quote{display:block;font-weight:400;}
+.mx-chip-name{
+  display:flex;align-items:center;gap:7px;
+  margin-top:8px;font-weight:900;font-size:.82rem;color:var(--forest);
+}
+.mx-chip-name::before{
+  content:"";width:7px;height:7px;border-radius:50%;flex:0 0 auto;
+  background:var(--terracotta);
+  box-shadow:0 0 8px rgba(30,159,224,.8);
+}
+.mx-chip-tag{
+  max-width:none;
+  padding:11px 22px;
+  border-radius:30px;
+  font-weight:900;
+  font-size:.95rem;
+  white-space:nowrap;
+}
+
+/* Placed in the gutters the float field leaves open, checked disc by disc
+   against every icon's own box so nothing lands on anything. Chip 1 is the
+   one that tucks: it runs under the panel's inline-start edge, which cuts
+   across it, and the panel sits on the photograph. */
+.mx-chip-1{--rot:-2.4deg; --amp:7px;   --dur:3.6s; --delay:.2s;  inset-inline-start:8%;  top:28%;}
+.mx-chip-2{--rot:1.8deg;  --amp:6px;   --dur:4.1s; --delay:.6s;  inset-inline-start:74%; top:48%;}
+.mx-chip-3{--rot:-1.6deg; --amp:8px;   --dur:3.9s; --delay:.35s; inset-inline-start:68%; top:auto;bottom:34px;}
+.mx-chip-4{--rot:2.6deg;  --amp:6.5px; --dur:4.4s; --delay:.8s;  inset-inline-start:22%; top:auto;bottom:30px;}
+
+/* The chips join the hero ladder, on the same 300ms rungs as the lockup.
+   They arrive on opacity only, because their transform is already carrying
+   the rotation and the bob. Nothing about their arrival shifts layout. */
+html.motion-ready .mx-chip{opacity:0;}
+html.motion-ready.hero-intro-started .mx-chip{
+  opacity:1;
+  transition:opacity var(--enter) var(--ease-out) var(--rung,0ms);
+}
+.mx-chip-1{--rung:calc(var(--step) * 3);}
+.mx-chip-2{--rung:calc(var(--step) * 4);}
+.mx-chip-3{--rung:calc(var(--step) * 5);}
+.mx-chip-4{--rung:calc(var(--step) * 6);}
+
+
+/* =========================================================================
+   3. THE GRADIENT SWEEP PILL.
+
+   One word in the hero, and exactly one more mid page, on the contact
+   heading. The gradient runs ink to the deep end of the brand and back,
+   because white on the LIGHT end of the family measures 2.96:1 and misses
+   even the large-text bar. Against the deep end it measures 4.41:1. The
+   brightness that the light end would have given comes back as the glow ring.
+
+   background-position is not a compositor property. It is used here because
+   the build spec names it, on a small stationary element that never moves
+   during scroll.
+   ========================================================================= */
+@keyframes mx-sweep{
+  0%,100%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+}
+.mx-sweep{
+  display:inline-block;
+  padding:.04em .3em .1em;
+  border-radius:.28em;
+  color:#fff;
+  transform:rotate(-2deg);
+  background-image:linear-gradient(100deg,#101A3D 0%,#1580B3 50%,#101A3D 100%);
+  background-size:260% 100%;
+  background-position:0% 50%;
+  box-shadow:0 0 0 1px rgba(30,159,224,.55), 0 14px 34px rgba(30,159,224,.40);
+  animation:mx-sweep 6s ease-in-out infinite;
+}
+.mx-sweep-host::before{
+  background-image:linear-gradient(100deg,#101A3D 0%,#1580B3 50%,#101A3D 100%);
+  background-size:260% 100%;
+  background-position:0% 50%;
+  animation:mx-sweep 6s ease-in-out infinite;
+}
+
+
+/* =========================================================================
+   4. THE GLOWING DIVIDER.
+
+   A 3px band of brand gradient with a soft glow, between three of the eight
+   section boundaries and not all of them. Rhythm needs variation that was
+   decided rather than applied everywhere (DESIGN-LAW 68). Static: it has no
+   animation and needs none.
+   ========================================================================= */
+.mx-divider{
+  height:3px;
+  width:100%;
+  background:linear-gradient(to left,
+    rgba(30,159,224,0) 0%,
+    #1580B3 18%,
+    #1E9FE0 50%,
+    #7DD3FC 74%,
+    rgba(30,159,224,0) 100%);
+  box-shadow:0 0 18px rgba(30,159,224,.55);
+}
+
+
+/* =========================================================================
+   5. THE RTL RIBBON: the page's one full-bleed break.
+
+   Tilted 2.5 degrees, nine workshop names alternating solid and outline,
+   period 30s exactly, linear, on a duplicated track so the loop is seamless.
+   Direction is declared in the markup comment and set by the sign of the
+   translate here: translateX runs 0 to +50%, so the track moves toward the
+   inline-START edge, the right on this page. Words enter at the left and
+   leave at the right, and because the track is laid out right to left the
+   names pass any fixed point in Hebrew reading order.
+   It pauses on hover, and under reduced motion it does not run at all.
+   ========================================================================= */
+.mx-ribbon-wrap{
+  width:100%;
+  overflow:hidden;
+  margin:104px 0;
+  padding:24px 0;
+}
+.mx-ribbon{
+  position:relative;
+  width:118%;
+  margin-inline-start:-9%;
+  overflow:hidden;
+  transform:rotate(2.5deg);
+  padding:20px 0;
+  background:linear-gradient(100deg,#101A3D 0%,#1580B3 50%,#101A3D 100%);
+  border-top:var(--panel-border) solid var(--panel-line-dark);
+  border-bottom:var(--panel-border) solid var(--panel-line-dark);
+  box-shadow:0 18px 50px rgba(30,159,224,.28);
+}
+.mx-ribbon-track{
   display:flex;
   width:max-content;
   direction:rtl;
-  will-change:transform;
-  animation:mx-marquee var(--mx-marquee-duration, 60s) linear infinite;
+  animation:mx-ribbon 30s linear infinite;
 }
-.mx-marquee-group{
+@keyframes mx-ribbon{
+  from{transform:translateX(0);}
+  to{transform:translateX(50%);}
+}
+.mx-ribbon-group{
   display:flex;
   align-items:center;
   flex:0 0 auto;
   white-space:nowrap;
 }
-.mx-marquee-item{
+.mx-ribbon-word{
   font-family:'Heebo',sans-serif;
-  font-weight:700;
-  font-size:1.25rem;
-  line-height:1.4;
-  color:#101A3D;
-  padding:0 6px;
+  font-weight:900;
+  font-size:1.5rem;
+  line-height:1.35;
+  color:#fff;
+  padding:0 4px;
 }
-.mx-marquee-dot{
+.mx-ribbon-word.is-outline{
+  color:transparent;
+  -webkit-text-stroke:1.5px #7DD3FC;
+}
+.mx-ribbon-dot{
   display:inline-block;
-  width:9px;
-  height:9px;
+  width:10px;
+  height:10px;
   border-radius:50%;
-  background:#1E9FE0;
-  margin:0 22px;
   flex:0 0 auto;
+  margin:0 24px;
+  background:var(--sage);
+  box-shadow:0 0 12px rgba(125,211,252,.9);
 }
-.mx-marquee:hover .mx-marquee-track,
-.mx-marquee.mx-offscreen .mx-marquee-track{animation-play-state:paused;}
-@keyframes mx-marquee{
-  from{transform:translateX(0);}
-  to{transform:translateX(50%);}
-}
+.mx-ribbon:hover .mx-ribbon-track,
+.mx-ribbon-wrap.mx-offscreen .mx-ribbon-track{animation-play-state:paused;}
+
+
+/* =========================================================================
+   6. THE PHONE'S STICKY GLASS BAR.
+
+   Phone only. The desktop gets no fixed bar at all, which is the point:
+   the phone gets its own decision per section, not a narrower column
+   (DESIGN-LAW 55).
+
+   Both actions already exist on the page. The form anchor is the solid brand
+   pill and it sits on the inline-start side, which the flex order puts on the
+   right in RTL. Elad's number is the second action, and its digits are
+   isolated with dir="ltr" so the punctuation cannot reorder inside Hebrew.
+
+   The bar is 72px: a 48px tap target with 12px of air above and below. The
+   page reserves exactly that much at the bottom, and the WhatsApp float is
+   lifted clear of it, so nothing is covered and nothing collides.
+   ========================================================================= */
+.mx-bar{display:none;}
+
 @media(max-width:640px){
-  .mx-marquee{padding:14px 0;}
-  .mx-marquee-item{font-size:1.1rem;}
-  .mx-marquee-dot{margin:0 16px;}
+  :root{--bar-h:72px;}
+  body{padding-bottom:calc(var(--bar-h) + env(safe-area-inset-bottom, 0px));}
+
+  .mx-bar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    position:fixed;
+    inset-inline:0;
+    bottom:0;
+    z-index:210;
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+    background:rgba(243,249,255,.72);
+    -webkit-backdrop-filter:blur(7px) saturate(125%);
+    backdrop-filter:blur(7px) saturate(125%);
+    border-top:var(--panel-border) solid var(--panel-line);
+    box-shadow:0 -10px 34px rgba(30,159,224,.22);
+  }
+  .mx-bar-cta{
+    flex:1 1 auto;
+    min-height:48px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:40px;
+    background:var(--brand-deep);
+    color:#fff;
+    font-weight:900;
+    font-size:1.1rem;
+    border:var(--panel-border) solid rgba(255,255,255,.24);
+    box-shadow:var(--panel-glow);
+    touch-action:manipulation;
+    transition:transform var(--fb) ease-out;
+  }
+  .mx-bar-cta:active{transform:scale(.97);}
+  .mx-bar-tel{
+    flex:0 0 auto;
+    min-height:48px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:0 16px;
+    border-radius:40px;
+    background:rgba(255,255,255,.92);
+    border:var(--panel-border) solid var(--panel-line);
+    box-shadow:var(--panel-glow);
+    color:var(--forest);
+    font-family:'Rubik',sans-serif;
+    font-weight:700;
+    font-size:1rem;
+    touch-action:manipulation;
+    transition:transform var(--fb) ease-out;
+  }
+  .mx-bar-tel:active{transform:scale(.97);}
+  .mx-bar-tel svg{
+    width:19px;height:19px;flex:0 0 auto;
+    stroke:var(--brand-deep);fill:none;stroke-width:1.9;
+    stroke-linecap:round;stroke-linejoin:round;
+  }
+  .mx-bar-cta:focus-visible,.mx-bar-tel:focus-visible{
+    outline:3px solid var(--terracotta);outline-offset:3px;
+  }
+
+  /* The float clears the bar instead of sitting on top of it. */
+  .whatsapp-float{
+    bottom:calc(var(--bar-h) + 16px + env(safe-area-inset-bottom, 0px));
+    width:54px;height:54px;font-size:1.45rem;
+  }
+
+  /* THE PHONE'S OWN FLOAT FIELD, per B1: FEWER icons, at B1's phone sizes.
+     Icons 4 and 6, the far band, drop out exactly as its table says, so five
+     remain and the 3px blur never runs on a phone at all.
+
+     The placement is this page's: the text column runs nearly edge to edge
+     here, so two discs go above the panel, two tuck against the glass edges
+     at mid height where the panel's own blur takes them, and one sits below.
+     Timings, amplitudes, delays and blurs are untouched. */
+  .mx-ico-1{--size:52px;}
+  .mx-ico-2{--size:42px;}
+  .mx-ico-3{--size:52px;}
+  .mx-ico-5{--size:42px;}
+  .mx-ico-7{--size:52px;}
+  .mx-ico-4,.mx-ico-6{display:none;}
+
+  .mx-ico-1{inset-inline-start:15%;top:28px;}
+  .mx-ico-3{inset-inline-start:80%;top:24px;}
+  /* These two tuck behind the glass at mid height, where the panel's own
+     blur takes them. Pulled far enough in that the screen edge does not also
+     cut them: half a disc at the viewport edge reads as a bug, not depth. */
+  .mx-ico-7{inset-inline-start:88%;top:40%;}
+  .mx-ico-2{inset-inline-start:10%;top:52%;}
+  .mx-ico-5{inset-inline-start:92%;top:64%;}
+
+  /* THE PHONE'S OWN CHIPS: three, and on a shelf instead of in gutters.
+     There are no side gutters at this width, so the chips move to the deeper
+     bottom padding under the panel: the two workshop tags in a row, the
+     quote beneath them, all still over the photograph. The long second quote
+     drops rather than being squeezed into a shape it does not fit.
+
+     The tuck-behind-the-panel interleave is a DESKTOP decision. Here the
+     panel runs nearly edge to edge, so a chip behind it would be hidden, not
+     layered, and a chip you cannot read is not an effect. */
+  .mx-chip{font-size:.82rem;padding:11px 14px;}
+  .mx-chip-tag{padding:9px 16px;font-size:.85rem;}
+  .mx-chip-1{inset-inline-start:6%; top:auto;bottom:22px;max-width:88vw;}
+  .mx-chip-2{display:none;}
+  .mx-chip-3{inset-inline-start:6%; top:auto;bottom:104px;}
+  .mx-chip-4{inset-inline-start:56%;top:auto;bottom:104px;}
+
+  .mx-ribbon-wrap{margin:72px 0;padding:18px 0;}
+  .mx-ribbon{padding:15px 0;}
+  .mx-ribbon-word{font-size:1.15rem;}
+  .mx-ribbon-dot{margin:0 16px;width:8px;height:8px;}
 }
 
-/* 2. Glowing card edges: a soft light-blue ring and glow on hover, plus one gentle pulse when a card reveals */
-.mx-glow-host{position:relative;}
-.mx-glow-edge{
-  position:absolute;
-  inset:0;
-  border-radius:inherit;
-  pointer-events:none;
-  opacity:0;
-  z-index:2;
-  box-shadow:inset 0 0 0 2px rgba(125,211,252,.95), 0 0 0 1px rgba(30,159,224,.3), 0 14px 40px rgba(30,159,224,.3);
-  transition:opacity .45s ease;
-}
-@media(hover:hover){
-  .mx-glow-host:hover .mx-glow-edge{opacity:1;}
-}
-html.motion-ready .mx-glow-host.is-revealed .mx-glow-edge{
-  animation:mx-glow-pulse 1.9s ease-out calc(var(--reveal-delay,0ms) + 520ms) 1;
-}
-@keyframes mx-glow-pulse{
-  0%{opacity:0;}
-  35%{opacity:.85;}
-  100%{opacity:0;}
-}
 
-/* 3. Floating shapes: soft light-blue circles drifting slowly behind a few sections */
-.mx-has-blobs{position:relative;overflow:hidden;}
-.mx-has-blobs > .container{position:relative;z-index:1;}
-.mx-blob{
-  position:absolute;
-  z-index:0;
-  border-radius:50%;
-  pointer-events:none;
-  background:radial-gradient(circle at center, rgba(125,211,252,.55) 0%, rgba(190,230,255,.35) 38%, rgba(190,230,255,0) 70%);
-  will-change:transform;
-  opacity:.9;
-}
-.mx-blob-a{
-  width:360px;height:360px;
-  top:10px;right:-110px;
-  animation:mx-float-a 16s ease-in-out infinite alternate;
-}
-.mx-blob-b{
-  width:260px;height:260px;
-  bottom:60px;left:-80px;
-  animation:mx-float-b 19s ease-in-out infinite alternate;
-}
-.mx-has-blobs.mx-offscreen .mx-blob{animation-play-state:paused;}
-@keyframes mx-float-a{
-  from{transform:translate(0,0) scale(1);}
-  to{transform:translate(-46px,54px) scale(1.12);}
-}
-@keyframes mx-float-b{
-  from{transform:translate(0,0) scale(1);}
-  to{transform:translate(50px,-44px) scale(1.1);}
-}
-@media(max-width:640px){
-  .mx-blob-a{width:240px;height:240px;top:10px;right:-80px;}
-  .mx-blob-b{width:190px;height:190px;bottom:50px;left:-60px;}
-}
+/* =========================================================================
+   7. REDUCED MOTION.
 
-/* Reduced motion: everything stays visible, nothing moves */
+   The page is complete, correct and still. No flourish here is the only
+   carrier of anything: every chip quotes words that are printed in full
+   further down, every icon stands for a workshop that is named and
+   photographed, and the ribbon repeats the list it sits above.
+   ========================================================================= */
 @media(prefers-reduced-motion: reduce){
-  .mx-marquee-track,
-  .mx-blob,
-  .mx-glow-edge{animation:none !important;}
-  .mx-glow-edge{transition:none;}
-  .mx-marquee{-webkit-mask-image:none;mask-image:none;}
+  .mx-ico,
+  .mx-chip,
+  .mx-sweep,
+  .mx-sweep-host::before,
+  .mx-ribbon-track{animation:none !important;}
+  html.motion-ready .mx-field,
+  html.motion-ready .mx-chip{opacity:1;}
+  html.motion-ready.hero-intro-started .mx-field,
+  html.motion-ready.hero-intro-started .mx-chip{transition:none;}
+  .mx-bar-cta,.mx-bar-tel{transition:none;}
+  .mx-bar-cta:active,.mx-bar-tel:active{transform:none;}
 }
